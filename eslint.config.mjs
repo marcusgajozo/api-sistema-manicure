@@ -39,11 +39,7 @@ export default defineConfig(
       },
       sourceType: 'commonjs',
       parserOptions: {
-        project: [
-          './tsconfig.json',
-          './tsconfig.spec.json',
-          './database/tsconfig.json',
-        ],
+        project: ['./tsconfig.json', './tsconfig.spec.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },

@@ -30,7 +30,8 @@
     "migration:generate": "pnpm typeorm migration:generate ./database/migrations/Migration",
     "migration:run": "pnpm typeorm migration:run",
     "migration:revert": "pnpm typeorm migration:revert",
-    "migration:show": "pnpm typeorm migration:show"
+    "migration:show": "pnpm typeorm migration:show",
+    "seed:user": "node -r ts-node/register -r tsconfig-paths/register ./database/seeds/create-user.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

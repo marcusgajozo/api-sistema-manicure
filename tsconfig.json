@@ -28,6 +28,6 @@
     "noFallthroughCasesInSwitch": false,
     "types": ["jest", "node"]
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "./database/**/*"],
   "exclude": ["node_modules", "dist"]
 }
