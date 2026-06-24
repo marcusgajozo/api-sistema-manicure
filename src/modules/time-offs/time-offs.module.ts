@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { TimeOffsController } from './controllers/time-offs.controller';
 import { TimeOffEntity } from './entities/time-off.entity';
-import { TimeOffsController } from './time-offs.controller';
-import { TimeOffsService } from './time-offs.service';
+import { TimeOffsService } from './services/time-offs.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TimeOffEntity])],

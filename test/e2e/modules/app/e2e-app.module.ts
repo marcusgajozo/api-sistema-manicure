@@ -3,6 +3,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GlobalExceptionFilter } from '@src/common/filters/global-exception.filter';
 import { AuthenticationModule } from '@src/modules/authentication/authentication.module';
 import { JwtAuthGuard } from '@src/modules/authentication/guards/jwt-auth.guard';
+import { TimeOffsModule } from '@src/modules/time-offs/time-offs.module';
 import { UsersModule } from '@src/modules/users/users.module';
 import { E2eDatabaseModule } from '@test/e2e/modules/database/e2e-database.module';
 import { E2eI18nModule } from '@test/e2e/modules/i18n/e2e-i18n.module';
@@ -13,6 +14,7 @@ import { E2eI18nModule } from '@test/e2e/modules/i18n/e2e-i18n.module';
     E2eI18nModule,
     AuthenticationModule,
     UsersModule,
+    TimeOffsModule,
   ],
   providers: [
     {

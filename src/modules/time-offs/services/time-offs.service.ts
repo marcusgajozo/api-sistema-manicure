@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 
-import { CreateTimeOffDto } from './dto/create-time-off.dto';
-import { UpdateTimeOffDto } from './dto/update-time-off.dto';
-import { TimeOffEntity } from './entities/time-off.entity';
+import { CreateTimeOffDto } from '../dto/create-time-off.dto';
+import { UpdateTimeOffDto } from '../dto/update-time-off.dto';
+import { TimeOffEntity } from '../entities/time-off.entity';
 
 @Injectable()
 export class TimeOffsService {

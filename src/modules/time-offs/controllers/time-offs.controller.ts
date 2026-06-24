@@ -23,9 +23,9 @@ import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 import { I18nTranslations } from '@/generated/i18n.generated';
 
-import { CreateTimeOffDto } from './dto/create-time-off.dto';
-import { UpdateTimeOffDto } from './dto/update-time-off.dto';
-import { TimeOffsService } from './time-offs.service';
+import { CreateTimeOffDto } from '../dto/create-time-off.dto';
+import { UpdateTimeOffDto } from '../dto/update-time-off.dto';
+import { TimeOffsService } from '../services/time-offs.service';
 
 @ApiBearerAuth()
 @Controller('time-offs')
