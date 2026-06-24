@@ -15,6 +15,7 @@
 !docker-compose.local.yaml
 !Dockerfile
 !eslint.config.mjs
+!lint-staged.config.mjs
 !LICENSE
 !nest-cli.json
 !package.json
@@ -23,16 +24,3 @@
 !README.md
 !tsconfig.build.json
 !tsconfig.json
-
-# --- Re-ignore build artifacts, dependencies, secrets ---
-node_modules/
-dist/
-build/
-coverage/
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-*.log
-.DS_Store
