@@ -1,22 +1,25 @@
 // @ts-check
 import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: [
       'eslint.config.mjs',
       'jest.config.mjs',
       'lint-staged.config.mjs',
+      'database/migrations/**',
       'src/generated/**',
     ],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
   {
+    files: ['src/**/*.ts', 'database/**/*.ts', '**/*.spec.ts', 'test/**/*.ts'],
+    extends: [...tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -32,8 +35,6 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  },
-  {
     rules: {
       'no-console': 'warn',
       '@typescript-eslint/no-explicit-any': 'off',
