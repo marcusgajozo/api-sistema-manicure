@@ -11,7 +11,7 @@
 !.nvmrc
 !.prettierrc
 !.env.example
-!commitlint.config.js
+!commitlint.config.cjs
 !docker-compose.local.yaml
 !Dockerfile
 !eslint.config.mjs
@@ -19,6 +19,7 @@
 !nest-cli.json
 !package.json
 !pnpm-lock.yaml
+!pnpm-workspace.yaml
 !README.md
 !tsconfig.build.json
 !tsconfig.json
