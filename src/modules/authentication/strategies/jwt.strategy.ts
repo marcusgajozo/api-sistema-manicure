@@ -1,15 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import type { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { UserRequest } from '@/common/types/user-request';
 
-import {
-  AuthenticationConfig,
-  authenticationConfig,
-} from '../configs/authentication.config';
+import { authenticationConfig } from '../configs/authentication.config';
 
 export function jwtFromCookieExtractor(cookieName: string) {
   return (request: Request): string | null => {
@@ -21,11 +18,10 @@ export function jwtFromCookieExtractor(cookieName: string) {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(configService: ConfigService) {
-    const authConfig = configService.getOrThrow<AuthenticationConfig>(
-      authenticationConfig.KEY,
-    );
-
+  constructor(
+    @Inject(authenticationConfig.KEY)
+    authConfig: ConfigType<typeof authenticationConfig>,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         jwtFromCookieExtractor(authConfig.cookie.name),

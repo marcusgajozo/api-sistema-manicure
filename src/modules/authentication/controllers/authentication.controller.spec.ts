@@ -1,5 +1,4 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
@@ -15,7 +14,6 @@ describe('AuthenticationController', () => {
   let authService: jest.Mocked<
     Pick<AuthenticationService, 'signIn' | 'signUp'>
   >;
-  let configService: jest.Mocked<Pick<ConfigService, 'getOrThrow'>>;
   let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
 
   const authConfig = {
@@ -36,9 +34,6 @@ describe('AuthenticationController', () => {
       signIn: jest.fn(),
       signUp: jest.fn(),
     };
-    configService = {
-      getOrThrow: jest.fn().mockReturnValue(authConfig),
-    };
     i18n = {
       translate: jest.fn((key: string) => key),
     } as unknown as jest.Mocked<Pick<I18nService, 'translate'>>;
@@ -51,8 +46,8 @@ describe('AuthenticationController', () => {
           useValue: authService,
         },
         {
-          provide: ConfigService,
-          useValue: configService,
+          provide: authenticationConfig.KEY,
+          useValue: authConfig,
         },
         {
           provide: I18nService,
@@ -82,9 +77,6 @@ describe('AuthenticationController', () => {
 
       const result = await controller.signIn(signInDto, response);
 
-      expect(configService.getOrThrow).toHaveBeenCalledWith(
-        authenticationConfig.KEY,
-      );
       expect(cookie).toHaveBeenCalledWith('access_token', 'signed-jwt', {
         httpOnly: true,
         secure: false,

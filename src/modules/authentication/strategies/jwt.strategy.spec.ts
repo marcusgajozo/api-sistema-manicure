@@ -1,6 +1,4 @@
-import { ConfigService } from '@nestjs/config';
-
-import { authenticationConfig } from '../configs/authentication.config';
+import type { AuthenticationConfig } from '../configs/authentication.config';
 import { jwtFromCookieExtractor, JwtStrategy } from './jwt.strategy';
 
 describe('jwtFromCookieExtractor', () => {
@@ -22,7 +20,7 @@ describe('jwtFromCookieExtractor', () => {
 });
 
 describe('JwtStrategy', () => {
-  const authConfig = {
+  const authConfig: AuthenticationConfig = {
     secret: 'configured-secret',
     expiresIn: '1h',
     cookie: {
@@ -36,11 +34,7 @@ describe('JwtStrategy', () => {
   };
 
   it('maps jwt payload to UserRequest', () => {
-    const configService = {
-      getOrThrow: jest.fn().mockReturnValue(authConfig),
-    } as unknown as ConfigService;
-
-    const strategy = new JwtStrategy(configService);
+    const strategy = new JwtStrategy(authConfig);
 
     expect(
       strategy.validate({
@@ -51,14 +45,5 @@ describe('JwtStrategy', () => {
       userId: 'user-id',
       email: 'user@example.com',
     });
-  });
-
-  it('loads authentication config from config service', () => {
-    const getOrThrow = jest.fn().mockReturnValue(authConfig);
-    const configService = { getOrThrow } as unknown as ConfigService;
-
-    new JwtStrategy(configService);
-
-    expect(getOrThrow).toHaveBeenCalledWith(authenticationConfig.KEY);
   });
 });

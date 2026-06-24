@@ -4,11 +4,12 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Inject,
   Post,
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
 import type { Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
 
@@ -16,10 +17,7 @@ import { Public } from '@/common/decorator/public.decorator';
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { I18nTranslations } from '@/generated/i18n.generated';
 
-import {
-  AuthenticationConfig,
-  authenticationConfig,
-} from '../configs/authentication.config';
+import { authenticationConfig } from '../configs/authentication.config';
 import { SignInDto } from '../dtos/sign-in.dto';
 import { SignUpDto } from '../dtos/sign-up.dto';
 import { AuthenticationService } from '../services/authentication.service';
@@ -28,7 +26,8 @@ import { AuthenticationService } from '../services/authentication.service';
 export class AuthenticationController {
   constructor(
     private readonly authService: AuthenticationService,
-    private readonly configService: ConfigService,
+    @Inject(authenticationConfig.KEY)
+    private readonly authConfig: ConfigType<typeof authenticationConfig>,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -47,10 +46,7 @@ export class AuthenticationController {
       );
     }
 
-    const authConfig = this.configService.getOrThrow<AuthenticationConfig>(
-      authenticationConfig.KEY,
-    );
-    const { name, ...cookieOptions } = authConfig.cookie;
+    const { name, ...cookieOptions } = this.authConfig.cookie;
 
     response.cookie(name, result.accessToken, cookieOptions);
 
