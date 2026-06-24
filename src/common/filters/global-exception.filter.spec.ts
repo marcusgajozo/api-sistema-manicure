@@ -14,7 +14,7 @@ describe('GlobalExceptionFilter', () => {
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
     i18n = {
       t: jest.fn((key: string) => `translated:${key}`),
-    };
+    } as unknown as jest.Mocked<Pick<I18nService, 't'>>;
     filter = new GlobalExceptionFilter(i18n as unknown as I18nService);
     response = {
       status: jest.fn().mockReturnThis(),

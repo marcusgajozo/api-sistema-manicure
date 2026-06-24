@@ -6,15 +6,15 @@ import { UserEntity } from '@/modules/users/entities/user.entity';
 @Entity('authentications')
 export class AuthenticationEntity extends BaseEntity {
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column({ name: 'password_hash' })
-  passwordHash: string;
+  passwordHash!: string;
 
   @OneToOne(() => UserEntity, { nullable: false })
   @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  user!: UserEntity;
 
   @Column({ name: 'user_id' })
-  userId: string;
+  userId!: string;
 }

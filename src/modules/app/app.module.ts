@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 
 import { GlobalExceptionFilter } from '../../common/filters/global-exception.filter';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AppointmentsModule } from '../appointments/appointments.module';
 import { AuthenticationModule } from '../authentication/authentication.module';
+import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { ClientsModule } from '../clients/clients.module';
 import { DatabaseModule } from '../database/database.module';
 import { I18nModule } from '../i18n/i18n.module';

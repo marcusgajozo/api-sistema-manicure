@@ -4,26 +4,38 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { JwtStrategy } from '../../common/strategies/jwt.strategy';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
-import { AuthenticationController } from './authentication.controller';
+import {
+  AuthenticationConfig,
+  authenticationConfig,
+  authenticationConfigFactory,
+} from './configs/authentication.config';
+import { AuthenticationController } from './controllers/authentication.controller';
 import { AuthenticationEntity } from './entities/authentication.entity';
 import { AuthenticationService } from './services/authentication.service';
 import { BcryptService } from './services/bycript.service';
 import { HashingService } from './services/hashing.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
+    ConfigModule.forFeature(authenticationConfigFactory),
     TypeOrmModule.forFeature([AuthenticationEntity, UserEntity]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET', 'secretKey'),
-        signOptions: { expiresIn: '1h' },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const authConfig = configService.getOrThrow<AuthenticationConfig>(
+          authenticationConfig.KEY,
+        );
+
+        return {
+          secret: authConfig.secret,
+          signOptions: { expiresIn: authConfig.expiresIn },
+        };
+      },
     }),
     UsersModule,
   ],
@@ -33,6 +45,5 @@ import { HashingService } from './services/hashing.service';
     AuthenticationService,
     JwtStrategy,
   ],
-  exports: [AuthenticationService],
 })
 export class AuthenticationModule {}

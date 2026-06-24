@@ -11,6 +11,12 @@ import { SignUpDto } from '../dtos/sign-up.dto';
 import { AuthenticationEntity } from '../entities/authentication.entity';
 import { HashingService } from './hashing.service';
 
+export interface SignInResult {
+  userId: string;
+  email: string;
+  accessToken: string;
+}
+
 @Injectable()
 export class AuthenticationService {
   constructor(
@@ -21,7 +27,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(signInDto: SignInDto) {
+  async signIn(signInDto: SignInDto): Promise<SignInResult | null> {
     const { email, password } = signInDto;
 
     const auth = await this.authenticationRepository.findOne({
@@ -29,7 +35,7 @@ export class AuthenticationService {
     });
 
     if (!auth) {
-      return auth;
+      return null;
     }
 
     const isPasswordValid = await this.bcryptService.compare(
@@ -44,7 +50,9 @@ export class AuthenticationService {
     const payload = { email: auth.email, sub: auth.userId };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      userId: auth.userId,
+      email: auth.email,
+      accessToken: this.jwtService.sign(payload),
     };
   }
 

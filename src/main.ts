@@ -1,11 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { I18nValidationPipe } from 'nestjs-i18n';
 
 import { AppModule } from './modules/app/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new I18nValidationPipe({
@@ -19,7 +22,7 @@ async function bootstrap() {
     .setTitle('NestJS API')
     .setDescription('The NestJS API description')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth('access_token')
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);

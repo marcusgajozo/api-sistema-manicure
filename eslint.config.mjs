@@ -9,6 +9,9 @@ import tseslint from 'typescript-eslint';
 export default defineConfig(
   {
     ignores: [
+      'dist/**',
+      'node_modules/**',
+      'coverage/**',
       'eslint.config.mjs',
       'jest.config.mjs',
       'lint-staged.config.mjs',
@@ -19,7 +22,12 @@ export default defineConfig(
   eslint.configs.recommended,
   eslintPluginPrettierRecommended,
   {
-    files: ['src/**/*.ts', 'database/**/*.ts', '**/*.spec.ts', 'test/**/*.ts'],
+    files: [
+      'src/**/*.ts',
+      'src/**/*.spec.ts',
+      'test/**/*.ts',
+      'database/**/*.ts',
+    ],
     extends: [...tseslint.configs.recommendedTypeChecked],
     plugins: {
       'simple-import-sort': simpleImportSort,
