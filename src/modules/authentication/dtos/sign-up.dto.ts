@@ -1,16 +1,21 @@
+import { IntersectionType } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
+import { Match } from '@/common/decorator/match.decorator';
 import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
 import { CreateUserDto } from '@/modules/users/dtos/create-user.dto';
 
-export class SignUpDto extends CreateUserDto {
+export class SignUpCredentialsDto {
   @IsEmail(
     {},
     {
       message: i18nValidationMessage('validation.INVALID_EMAIL'),
     },
   )
-  email: string;
+  @IsNotEmpty({
+    message: i18nValidationMessage('validation.NOT_EMPTY'),
+  })
+  email!: string;
 
   @IsString({
     message: i18nValidationMessage('validation.INVALID_STRING'),
@@ -18,7 +23,7 @@ export class SignUpDto extends CreateUserDto {
   @IsNotEmpty({
     message: i18nValidationMessage('validation.NOT_EMPTY'),
   })
-  password: string;
+  password!: string;
 
   @IsString({
     message: i18nValidationMessage('validation.INVALID_STRING'),
@@ -26,5 +31,13 @@ export class SignUpDto extends CreateUserDto {
   @IsNotEmpty({
     message: i18nValidationMessage('validation.NOT_EMPTY'),
   })
-  passwordConfirm: string;
+  @Match('password', {
+    message: i18nValidationMessage('validation.FIELDS_MUST_MATCH'),
+  })
+  passwordConfirm!: string;
 }
+
+export class SignUpDto extends IntersectionType(
+  CreateUserDto,
+  SignUpCredentialsDto,
+) {}
