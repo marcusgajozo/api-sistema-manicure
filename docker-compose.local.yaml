@@ -17,7 +17,8 @@ services:
     networks:
       - api-manicure-network
     depends_on:
-      - postgres-manicure-db
+      postgres-manicure-db:
+        condition: service_healthy
 
   postgres-manicure-db:
     image: postgres:18-alpine
@@ -30,5 +31,10 @@ services:
       - '${DATABASE_PORT_EXTERNAL}:5432'
     networks:
       - api-manicure-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql
