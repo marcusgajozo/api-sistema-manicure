@@ -1,6 +1,6 @@
-import { BaseEntity } from 'src/common/entities/base.entity';
-import { AppointmentEntity } from 'src/modules/appointments/entities/appointment.entity';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { AppointmentEntity } from '@/modules/appointments/entities/appointment.entity';
+import { UserEntity } from '@/modules/users/entities/user.entity';
 import {
   Column,
   Entity,

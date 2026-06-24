@@ -1,7 +1,7 @@
-import { BaseEntity } from 'src/common/entities/base.entity';
-import { ClientEntity } from 'src/modules/clients/entities/client.entity';
-import { ProcedureEntity } from 'src/modules/procedures/entities/procedure.entity';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { ClientEntity } from '@/modules/clients/entities/client.entity';
+import { ProcedureEntity } from '@/modules/procedures/entities/procedure.entity';
+import { UserEntity } from '@/modules/users/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
 import { NotifyReturnClientEnum } from '../enums/notify-client.enum';
 import { StatusAppointmentEnum } from '../enums/status-appointment.enum';

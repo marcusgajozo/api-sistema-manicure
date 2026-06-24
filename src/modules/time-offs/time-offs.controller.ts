@@ -12,17 +12,17 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { UserAuth } from 'src/common/decorator/user-auth.decorator';
+import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
-} from 'src/common/dtos/pagination.dto';
-import { VerifyUUIDIdPipe } from 'src/common/pipes/verify-uuid-id.pipe';
+} from '@/common/dtos/pagination.dto';
+import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 import { CreateTimeOffDto } from './dto/create-time-off.dto';
 import { UpdateTimeOffDto } from './dto/update-time-off.dto';
-import { ResponseDto } from 'src/common/dtos/response.dto';
+import { ResponseDto } from '@/common/dtos/response.dto';
 import { I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from 'src/generated/i18n.generated';
+import { I18nTranslations } from '@/generated/i18n.generated';
 import { TimeOffsService } from './time-offs.service';
 
 @ApiBearerAuth()

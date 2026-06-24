@@ -10,10 +10,10 @@ import {
 import { AuthenticationService } from './services/authentication.service';
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignUpDto } from './dtos/sign-up.dto';
-import { Public } from 'src/common/decorator/public.decorator';
-import { ResponseDto } from 'src/common/dtos/response.dto';
+import { Public } from '@/common/decorator/public.decorator';
+import { ResponseDto } from '@/common/dtos/response.dto';
 import { I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from 'src/generated/i18n.generated';
+import { I18nTranslations } from '@/generated/i18n.generated';
 
 @Controller('authentication')
 export class AuthenticationController {

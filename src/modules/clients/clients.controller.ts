@@ -12,18 +12,18 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { UserAuth } from 'src/common/decorator/user-auth.decorator';
+import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
-} from 'src/common/dtos/pagination.dto';
-import { VerifyUUIDIdPipe } from 'src/common/pipes/verify-uuid-id.pipe';
+} from '@/common/dtos/pagination.dto';
+import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
-import { ResponseDto } from 'src/common/dtos/response.dto';
+import { ResponseDto } from '@/common/dtos/response.dto';
 import { I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from 'src/generated/i18n.generated';
+import { I18nTranslations } from '@/generated/i18n.generated';
 
 @ApiBearerAuth()
 @Controller('clients')

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto';
-import { UsersService } from 'src/modules/users/users.service';
+import { CreateUserDto } from '@/modules/users/dtos/create-user.dto';
+import { UsersService } from '@/modules/users/users.service';
 import { Repository } from 'typeorm';
 import { SignInDto } from '../dtos/sign-in.dto';
 import { SignUpDto } from '../dtos/sign-up.dto';

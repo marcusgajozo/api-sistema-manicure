@@ -11,13 +11,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { UserAuth } from 'src/common/decorator/user-auth.decorator';
+import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
-} from 'src/common/dtos/pagination.dto';
-import { ResponseDto } from 'src/common/dtos/response.dto';
-import { VerifyUUIDIdPipe } from 'src/common/pipes/verify-uuid-id.pipe';
+} from '@/common/dtos/pagination.dto';
+import { ResponseDto } from '@/common/dtos/response.dto';
+import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 import { CreateScheduleTemplateDto } from './dto/create-schedule-template.dto';
 import { UpdateScheduleTemplateDto } from './dto/update-schedule-template.dto';
 import { ScheduleTemplatesService } from './schedule-templates.service';

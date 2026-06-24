@@ -7,8 +7,8 @@ import {
   IsUUID,
   ValidateIf,
 } from 'class-validator';
-import { IsBeforeDate } from 'src/common/decorator/is-before-date.decorator';
-import { i18nValidationMessage } from 'src/common/helper/i18n-validation-message';
+import { IsBeforeDate } from '@/common/decorator/is-before-date.decorator';
+import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
 
 export class CreateAppointmentDto {
   @IsOptional()

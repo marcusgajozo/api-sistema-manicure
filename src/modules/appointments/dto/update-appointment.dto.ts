@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateAppointmentDto } from './create-appointment.dto';
 import { IsEnum, IsOptional } from 'class-validator';
-import { i18nValidationMessage } from 'src/common/helper/i18n-validation-message';
+import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
 import { NotifyReturnClientEnum } from '../enums/notify-client.enum';
 import { StatusAppointmentEnum } from '../enums/status-appointment.enum';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
+import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { Repository } from 'typeorm';
 import { CreateTimeOffDto } from './dto/create-time-off.dto';
 import { UpdateTimeOffDto } from './dto/update-time-off.dto';

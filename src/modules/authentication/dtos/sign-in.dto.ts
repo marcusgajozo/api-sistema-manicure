@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { i18nValidationMessage } from 'src/common/helper/i18n-validation-message';
+import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
 
 export class SignInDto {
   @IsEmail(
