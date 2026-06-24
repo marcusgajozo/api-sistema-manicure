@@ -13,6 +13,7 @@
   "INVALID_DATE_STRING": "O campo {property} deve ser uma string de data válida.",
   "INVALID_ENUM": "O campo {property} deve ser um dos valores: {constraint2}.",
   "START_BEFORE_END_TIME": "O campo {property} deve ser antes do campo {constraint1}.",
+  "FIELDS_MUST_MATCH": "O campo {property} deve ser igual ao campo {constraint1}.",
   "SCHEDULE_TEMPLATE_CONFLICT": "O template de horário entra em conflito com templates existentes.",
   "APPOINTMENT_CONFLICT": "O agendamento entra em conflito com outros agendamentos existentes.",
   "IVALID_BEFORE_DATE": "O campo {property} deve ser uma data antes do campo {constraint1}."

@@ -20,6 +20,7 @@ export type I18nTranslations = {
         "INVALID_DATE_STRING": string;
         "INVALID_ENUM": string;
         "START_BEFORE_END_TIME": string;
+        "FIELDS_MUST_MATCH": string;
         "SCHEDULE_TEMPLATE_CONFLICT": string;
         "APPOINTMENT_CONFLICT": string;
         "IVALID_BEFORE_DATE": string;
