@@ -15,12 +15,12 @@ export class CreateAppointmentDto {
   @IsUUID('4', { message: i18nValidationMessage('validation.INVALID_UUID') })
   procedureId?: string;
 
-  @ValidateIf((o) => !o.procedureId)
+  @ValidateIf((o: CreateAppointmentDto) => !o.procedureId)
   @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
   @IsString()
   procedureName?: string;
 
-  @ValidateIf((o) => !o.procedureId)
+  @ValidateIf((o: CreateAppointmentDto) => !o.procedureId)
   @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
   @IsInt({ message: i18nValidationMessage('validation.INVALID_INT') })
   procedurePrice?: number;
@@ -33,12 +33,12 @@ export class CreateAppointmentDto {
   @IsUUID('4', { message: i18nValidationMessage('validation.INVALID_UUID') })
   clientId?: string;
 
-  @ValidateIf((o) => !o.clientId)
+  @ValidateIf((o: CreateAppointmentDto) => !o.clientId)
   @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
   @IsString()
   clientName?: string;
 
-  @ValidateIf((o) => !o.clientId)
+  @ValidateIf((o: CreateAppointmentDto) => !o.clientId)
   @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
   @IsString()
   phoneClient?: string;

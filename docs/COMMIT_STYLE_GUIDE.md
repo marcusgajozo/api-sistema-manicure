@@ -1,48 +1,58 @@
 # Commit Style Guide
 
-## Overview
+## Visão geral
 
-This document outlines the guidelines for committing changes to our project. By adhering to these rules, we ensure that our commit history is clear, understandable, and consistent.
+Este documento define as regras para commits no projeto. Seguindo essas diretrizes, o histórico fica claro, compreensível e consistente.
 
-## Commit Message Conventions
+## Convenções de mensagem
 
-Commit messages should follow the conventional commit message format to improve the readability of the changelog. Commits should be descriptive and concise. Here’s an example:
-
-```
-feat(user-auth): add login functionality
-```
-
-### Types of Commits
-
-- **feat**: A new feature
-- **fix**: A bug fix
-- **docs**: Documentation changes
-- **style**: Formatting or cosmetic changes
-- **refactor**: Code refactoring without changing the public API
-- **test**: Adding missing tests
-- **chore**: Build process, library version updates, etc.
-
-### Commit Message Structure
-
-A commit message should consist of a subject line and an optional body. The subject line should be no longer than 50 characters and follow the format:
+As mensagens devem seguir o formato [Conventional Commits](https://www.conventionalcommits.org/). **Assunto e corpo são escritos em português.** O tipo e o escopo permanecem no padrão conventional (em inglês). Exemplo:
 
 ```
-<type>(<scope>): <subject>
+feat(auth): adiciona fluxo de login com JWT
+
+Implementa autenticação com validação de credenciais e emissão de token.
 ```
 
-The body can provide additional details and is formatted using markdown.
+### Tipos de commit
 
-## Examples
+- **feat**: uma nova funcionalidade
+- **fix**: correção de bug
+- **docs**: mudanças em documentação
+- **style**: formatação ou mudanças cosméticas
+- **refactor**: refatoração sem mudar a API pública
+- **test**: adicionar testes faltantes
+- **chore**: processo de build, atualização de bibliotecas, etc.
 
-- **feat(user-auth): add login functionality**
-- **fix(data-fetcher): handle edge case for large datasets**
-- **docs(api-docs): update documentation for new endpoint**
+### Estrutura da mensagem
 
-## Additional Guidelines
+A mensagem deve conter uma linha de assunto (subject) e um corpo (body) opcional. O header (`<tipo>(<escopo>): <assunto>`) deve ter no máximo **72 caracteres** e seguir o formato:
 
-- Use imperative mood in commit messages.
-- Keep the subject line concise and focused on the change being made.
-- The body should provide enough context to understand the change without referring back to the code.
-- Avoid merge commits and squash all changes into a single commit when possible.
+```
+<tipo>(<escopo>): <assunto>
+```
 
-By following these guidelines, we can maintain a clean and informative commit history that reflects the true nature of each change in our project.
+O corpo pode trazer detalhes adicionais em markdown.
+
+## Exemplos
+
+- **feat(auth): adiciona fluxo de login com JWT**
+- **fix(clients): trata datasets grandes na listagem**
+- **docs(api): atualiza documentação do novo endpoint**
+
+Exemplo com corpo:
+
+```
+feat(users): adiciona endpoint de upload de avatar
+
+Adiciona endpoint para upload de avatar com validação de tipo
+e tamanho de arquivo. O avatar é redimensionado para 200x200.
+```
+
+## Diretrizes adicionais
+
+- O assunto deve estar no imperativo em português (ex.: _adiciona_, _corrige_, _atualiza_).
+- O limite de **72 caracteres** vale para o **header inteiro** (`tipo(escopo): assunto`). Prefira escopos curtos (`config`, `gitignore`) e detalhes no corpo.
+- Mantenha o assunto conciso e focado na mudança.
+- O corpo deve fornecer contexto suficiente quando o assunto não for autoexplicativo.
+- Evite merge commits; prefira squash quando possível.

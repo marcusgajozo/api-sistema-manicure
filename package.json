@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write --ignore-unknown --no-error-on-unmatched-pattern \"src/**/*.ts\" \"test/**/*.ts\" \"*.{js,mjs,cjs,json,md,yml,yaml}\"",
+    "fix": "prettier --write --ignore-unknown --no-error-on-unmatched-pattern \"src/**/*.ts\" \"test/**/*.ts\" \"*.{js,mjs,cjs,json,md,yml,yaml}\" && eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -52,6 +53,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
+    "@commitlint/cz-commitlint": "^21.1.0",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",
@@ -69,6 +71,7 @@
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "jest": "^30.0.0",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
@@ -98,7 +101,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+      "path": "@commitlint/cz-commitlint"
     }
   }
 }
