@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { DataSource } from 'typeorm';
+
 import { getMigrationConnectionOptions } from './database.config';
 import { loadAppEnv } from './load-env';
 

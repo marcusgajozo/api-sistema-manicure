@@ -1,6 +1,3 @@
-import { BaseEntity } from '@/common/entities/base.entity';
-import { AppointmentEntity } from '@/modules/appointments/entities/appointment.entity';
-import { UserEntity } from '@/modules/users/entities/user.entity';
 import {
   Column,
   Entity,
@@ -9,6 +6,10 @@ import {
   OneToMany,
   RelationId,
 } from 'typeorm';
+
+import { BaseEntity } from '@/common/entities/base.entity';
+import { AppointmentEntity } from '@/modules/appointments/entities/appointment.entity';
+import { UserEntity } from '@/modules/users/entities/user.entity';
 
 @Entity('procedures')
 export class ProcedureEntity extends BaseEntity {

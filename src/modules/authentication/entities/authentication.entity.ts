@@ -1,6 +1,7 @@
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+
 import { BaseEntity } from '@/common/entities/base.entity';
 import { UserEntity } from '@/modules/users/entities/user.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity('authentications')
 export class AuthenticationEntity extends BaseEntity {

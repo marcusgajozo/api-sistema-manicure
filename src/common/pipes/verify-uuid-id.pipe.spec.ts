@@ -1,4 +1,5 @@
 import { I18nValidationException } from 'nestjs-i18n';
+
 import { VerifyUUIDIdPipe } from './verify-uuid-id.pipe';
 
 describe('VerifyUUIDIdPipe', () => {

@@ -1,6 +1,7 @@
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
+
 import { BaseEntity } from '@/common/entities/base.entity';
 import { UserEntity } from '@/modules/users/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
 
 @Entity('time_offs')
 export class TimeOffEntity extends BaseEntity {

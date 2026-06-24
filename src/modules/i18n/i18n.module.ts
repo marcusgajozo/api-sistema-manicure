@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'path';
 import {
   AcceptLanguageResolver,
   HeaderResolver,
   I18nModule as NestI18nModule,
   QueryResolver,
 } from 'nestjs-i18n';
+import { join } from 'path';
+
 import {
+  I18nConfig,
   i18nConfig,
   i18nConfigFactory,
-  I18nConfig,
 } from './configs/i18n.config';
 
 @Module({

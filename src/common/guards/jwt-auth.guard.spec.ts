@@ -1,7 +1,8 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { createMockExecutionContext } from '@test/helpers/execution-context.helper';
+
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 type PassportCanActivate = {
   canActivate: (context: unknown) => Promise<boolean>;

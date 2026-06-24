@@ -2,6 +2,7 @@
 import eslint from '@eslint/js';
 import { defineConfig } from 'eslint/config';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -20,6 +21,9 @@ export default defineConfig(
   {
     files: ['src/**/*.ts', 'database/**/*.ts', '**/*.spec.ts', 'test/**/*.ts'],
     extends: [...tseslint.configs.recommendedTypeChecked],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
     languageOptions: {
       globals: {
         ...globals.node,
@@ -36,10 +40,20 @@ export default defineConfig(
       },
     },
     rules: {
-      'no-console': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      'simple-import-sort/imports': 'warn',
+      'simple-import-sort/exports': 'warn',
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },

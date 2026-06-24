@@ -1,4 +1,5 @@
 import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
+
 import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
 
 export class CreateProcedureDto {

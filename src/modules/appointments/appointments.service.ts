@@ -5,13 +5,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
+import { Repository } from 'typeorm';
+
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { I18nTranslations } from '@/generated/i18n.generated';
-import { Repository } from 'typeorm';
+
+import { TimeOffEntity } from '../time-offs/entities/time-off.entity';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { AppointmentEntity } from './entities/appointment.entity';
-import { TimeOffEntity } from '../time-offs/entities/time-off.entity';
 
 @Injectable()
 export class AppointmentsService {

@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+
 import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
 import { CreateUserDto } from '@/modules/users/dtos/create-user.dto';
 

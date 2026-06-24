@@ -12,17 +12,19 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { I18nService } from 'nestjs-i18n';
+
 import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
 } from '@/common/dtos/pagination.dto';
+import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
+import { I18nTranslations } from '@/generated/i18n.generated';
+
 import { CreateTimeOffDto } from './dto/create-time-off.dto';
 import { UpdateTimeOffDto } from './dto/update-time-off.dto';
-import { ResponseDto } from '@/common/dtos/response.dto';
-import { I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from '@/generated/i18n.generated';
 import { TimeOffsService } from './time-offs.service';
 
 @ApiBearerAuth()

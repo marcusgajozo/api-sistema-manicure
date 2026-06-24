@@ -1,6 +1,7 @@
 import { ROUTE_ARGS_METADATA } from '@nestjs/common/constants';
-import { UserAuth } from './user-auth.decorator';
 import { createMockExecutionContext } from '@test/helpers/execution-context.helper';
+
+import { UserAuth } from './user-auth.decorator';
 
 function getParamDecoratorFactory(
   decorator: ParameterDecorator,

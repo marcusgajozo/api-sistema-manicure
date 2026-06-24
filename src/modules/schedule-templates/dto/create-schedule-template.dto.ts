@@ -1,6 +1,8 @@
 import { IsEnum, IsMilitaryTime, IsNotEmpty } from 'class-validator';
+
 import { IsBeforeTime } from '@/common/decorator/is-before-time.decorator';
 import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
+
 import { DayOfWeek } from '../../../common/enums/day-of-week.enum';
 
 export class CreateScheduleTemplateDto {

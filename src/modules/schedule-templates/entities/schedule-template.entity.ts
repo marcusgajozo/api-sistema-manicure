@@ -1,7 +1,8 @@
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
+
 import { BaseEntity } from '@/common/entities/base.entity';
 import { DayOfWeek } from '@/common/enums/day-of-week.enum';
 import { UserEntity } from '@/modules/users/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
 
 @Entity('schedule_templates')
 export class ScheduleTemplateEntity extends BaseEntity {

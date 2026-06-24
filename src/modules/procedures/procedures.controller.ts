@@ -9,20 +9,22 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
-import { CreateProcedureDto } from './dto/create-procedure.dto';
-import { UpdateProcedureDto } from './dto/update-procedure.dto';
-import { ProceduresService } from './procedures.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { I18nService } from 'nestjs-i18n';
+
+import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
 } from '@/common/dtos/pagination.dto';
-import { UserAuth } from '@/common/decorator/user-auth.decorator';
-import { ProcedureEntity } from './entities/procedure.entity';
 import { ResponseDto } from '@/common/dtos/response.dto';
-import { I18nService } from 'nestjs-i18n';
+import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 import { I18nTranslations } from '@/generated/i18n.generated';
+
+import { CreateProcedureDto } from './dto/create-procedure.dto';
+import { UpdateProcedureDto } from './dto/update-procedure.dto';
+import { ProcedureEntity } from './entities/procedure.entity';
+import { ProceduresService } from './procedures.service';
 
 @ApiBearerAuth()
 @Controller('procedures')

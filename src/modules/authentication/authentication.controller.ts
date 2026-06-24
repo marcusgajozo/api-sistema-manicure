@@ -7,13 +7,15 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthenticationService } from './services/authentication.service';
-import { SignInDto } from './dtos/sign-in.dto';
-import { SignUpDto } from './dtos/sign-up.dto';
+import { I18nService } from 'nestjs-i18n';
+
 import { Public } from '@/common/decorator/public.decorator';
 import { ResponseDto } from '@/common/dtos/response.dto';
-import { I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from '@/generated/i18n.generated';
+
+import { SignInDto } from './dtos/sign-in.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
+import { AuthenticationService } from './services/authentication.service';
 
 @Controller('authentication')
 export class AuthenticationController {

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { CreateUserDto } from '@/modules/users/dtos/create-user.dto';
 import { UsersService } from '@/modules/users/users.service';
-import { Repository } from 'typeorm';
+
 import { SignInDto } from '../dtos/sign-in.dto';
 import { SignUpDto } from '../dtos/sign-up.dto';
 import { AuthenticationEntity } from '../entities/authentication.entity';

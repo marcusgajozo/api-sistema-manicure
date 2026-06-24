@@ -1,5 +1,6 @@
-import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+
 import { PaginatedResponseDto, PaginationQueryDto } from './pagination.dto';
 
 describe('PaginationQueryDto', () => {
