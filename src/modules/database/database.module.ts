@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import {
-  DatabaseConfig,
-  databaseConfig,
-  databaseConfigFactory,
-} from './configs/database.config';
+import { databaseConfig } from './configs/database.config';
 
 @Module({
   imports: [
-    ConfigModule.forFeature(databaseConfigFactory),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        ...configService.getOrThrow<DatabaseConfig>(databaseConfig.KEY),
+      imports: [ConfigModule.forFeature(databaseConfig)],
+      inject: [databaseConfig.KEY],
+      useFactory: (config: ConfigType<typeof databaseConfig>) => ({
+        type: config.type,
+        host: config.host,
+        port: config.port,
+        username: config.username,
+        password: config.password,
+        database: config.database,
         autoLoadEntities: true,
       }),
     }),
