@@ -9,7 +9,7 @@ export class SignInDto {
       message: i18nValidationMessage('validation.INVALID_EMAIL'),
     },
   )
-  email!: string;
+  email: string;
 
   @IsString({
     message: i18nValidationMessage('validation.INVALID_STRING'),
@@ -17,5 +17,5 @@ export class SignInDto {
   @IsNotEmpty({
     message: i18nValidationMessage('validation.NOT_EMPTY'),
   })
-  password!: string;
+  password: string;
 }

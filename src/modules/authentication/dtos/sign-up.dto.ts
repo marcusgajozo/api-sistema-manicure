@@ -10,7 +10,7 @@ export class SignUpDto extends CreateUserDto {
       message: i18nValidationMessage('validation.INVALID_EMAIL'),
     },
   )
-  email!: string;
+  email: string;
 
   @IsString({
     message: i18nValidationMessage('validation.INVALID_STRING'),
@@ -18,7 +18,7 @@ export class SignUpDto extends CreateUserDto {
   @IsNotEmpty({
     message: i18nValidationMessage('validation.NOT_EMPTY'),
   })
-  password!: string;
+  password: string;
 
   @IsString({
     message: i18nValidationMessage('validation.INVALID_STRING'),
@@ -26,5 +26,5 @@ export class SignUpDto extends CreateUserDto {
   @IsNotEmpty({
     message: i18nValidationMessage('validation.NOT_EMPTY'),
   })
-  passwordConfirm!: string;
+  passwordConfirm: string;
 }
