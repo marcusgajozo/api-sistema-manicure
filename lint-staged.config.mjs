@@ -1,6 +1,6 @@
 /** @type {import('lint-staged').Configuration} */
 export default {
-  '{src,test,apps,libs}/**/*.ts': [
+  '{src,test,apps,libs,database}/**/*.ts': [
     'eslint --fix --no-warn-ignored',
     'prettier --write',
   ],

@@ -1,16 +1,21 @@
 volumes:
   pg-data:
 
+networks:
+  api-manicure-network:
+
 services:
   api-manicure:
     build:
       context: .
-      dockerfile: Dockerfile
       target: development
+    user: '${DOCKER_UID:-1000}:${DOCKER_GID:-1000}'
     volumes:
       - .:/api
     ports:
       - '${API_PORT:-3000}:3000'
+    networks:
+      - api-manicure-network
     depends_on:
       - postgres-manicure-db
 
@@ -22,6 +27,8 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_USER: ${DATABASE_USER}
     ports:
-      - '${DATABASE_PORT}:5432'
+      - '${DATABASE_PORT_EXTERNAL}:5432'
+    networks:
+      - api-manicure-network
     volumes:
       - pg-data:/var/lib/postgresql/data

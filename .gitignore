@@ -1,5 +1,7 @@
 *
 
+!database/**
+!database
 !src/**
 !src
 !test/**
