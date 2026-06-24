@@ -16,7 +16,9 @@
     "rootDir": "./",
     "paths": {
       "@/*": ["./src/*"],
-      "@test/*": ["./test/*"]
+      "@src/*": ["./src/*"],
+      "@test/*": ["./test/*"],
+      "@test/e2e/*": ["./test/e2e/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -28,6 +30,6 @@
     "noFallthroughCasesInSwitch": false,
     "types": ["jest", "node"]
   },
-  "include": ["./src/**/*", "./database/**/*"],
+  "include": ["./src/**/*", "./database/**/*", "./test/**/*"],
   "exclude": ["node_modules", "dist"]
 }

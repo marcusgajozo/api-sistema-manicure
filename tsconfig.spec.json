@@ -5,7 +5,9 @@
     "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"],
-      "@test/*": ["./test/*"]
+      "@src/*": ["./src/*"],
+      "@test/*": ["./test/*"],
+      "@test/e2e/*": ["./test/e2e/*"]
     }
   },
   "include": ["src/**/*.spec.ts", "test/**/*"],

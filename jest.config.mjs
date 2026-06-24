@@ -15,6 +15,8 @@ export default {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
+    '^@src/(.*)$': '<rootDir>/../src/$1',
+    '^@test/e2e/(.*)$': '<rootDir>/../test/e2e/$1',
     '^@/(.*)$': '<rootDir>/$1',
     '^@test/(.*)$': '<rootDir>/../test/$1',
   },
