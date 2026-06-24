@@ -1,12 +1,12 @@
-# Ignore everything at root by default
 *
 
-# --- Source code ---
 !src/**
+!src
 !docs/**
+!docs
 !.husky/**
+!.husky
 
-# --- Root config files ---
 !.gitignore
 !.nvmrc
 !.prettierrc
