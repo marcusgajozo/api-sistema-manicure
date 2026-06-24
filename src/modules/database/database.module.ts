@@ -16,7 +16,6 @@ import {
       useFactory: (configService: ConfigService) => ({
         ...configService.getOrThrow<DatabaseConfig>(databaseConfig.KEY),
         autoLoadEntities: true,
-        synchronize: false,
       }),
     }),
   ],
