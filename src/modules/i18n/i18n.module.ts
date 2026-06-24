@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import {
   AcceptLanguageResolver,
   HeaderResolver,
@@ -8,21 +9,15 @@ import {
 } from 'nestjs-i18n';
 import { join } from 'path';
 
-import {
-  I18nConfig,
-  i18nConfig,
-  i18nConfigFactory,
-} from './configs/i18n.config';
+import { i18nConfig } from './configs/i18n.config';
 
 @Module({
   imports: [
-    ConfigModule.forFeature(i18nConfigFactory),
     NestI18nModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        fallbackLanguage: configService.getOrThrow<I18nConfig>(i18nConfig.KEY)
-          .fallbackLanguage,
+      imports: [ConfigModule.forFeature(i18nConfig)],
+      inject: [i18nConfig.KEY],
+      useFactory: (config: ConfigType<typeof i18nConfig>) => ({
+        fallbackLanguage: config.fallbackLanguage,
         loaderOptions: {
           path: join(__dirname, 'languages'),
           watch: true,
