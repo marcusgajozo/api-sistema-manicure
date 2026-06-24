@@ -1,14 +1,14 @@
 *
 
-!database/**
 !database
-!src/**
+!database/**/*
+!src/**/*
 !src
-!test/**
+!test/**/*
 !test
-!docs/**
+!docs/**/*
 !docs
-!.husky/**
+!.husky/**/*
 !.husky
 
 !.gitignore
