@@ -8,6 +8,7 @@ export default tseslint.config(
   {
     ignores: [
       'eslint.config.mjs',
+      'jest.config.mjs',
       'lint-staged.config.mjs',
       'src/generated/**',
     ],

@@ -15,15 +15,18 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "src/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@test/*": ["./test/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
+    "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "types": ["jest", "node"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }

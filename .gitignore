@@ -2,6 +2,8 @@
 
 !src/**
 !src
+!test/**
+!test
 !docs/**
 !docs
 !.husky/**
@@ -15,6 +17,7 @@
 !docker-compose.local.yaml
 !Dockerfile
 !eslint.config.mjs
+!jest.config.mjs
 !lint-staged.config.mjs
 !LICENSE
 !nest-cli.json
