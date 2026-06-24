@@ -22,7 +22,16 @@ import { i18nConfig } from './configs/i18n.config';
           path: join(__dirname, 'languages'),
           watch: true,
         },
-        typesOutputPath: join(__dirname, '..', '..', 'i18n.generated.ts'),
+        typesOutputPath: join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          '..',
+          'src',
+          'generated',
+          'i18n.generated.ts',
+        ),
       }),
       resolvers: [
         { use: QueryResolver, options: ['lang'] },
