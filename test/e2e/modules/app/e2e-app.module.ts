@@ -3,6 +3,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GlobalExceptionFilter } from '@src/common/filters/global-exception.filter';
 import { AuthenticationModule } from '@src/modules/authentication/authentication.module';
 import { JwtAuthGuard } from '@src/modules/authentication/guards/jwt-auth.guard';
+import { ClientsModule } from '@src/modules/clients/clients.module';
 import { ProceduresModule } from '@src/modules/procedures/procedures.module';
 import { ScheduleTemplatesModule } from '@src/modules/schedule-templates/schedule-templates.module';
 import { TimeOffsModule } from '@src/modules/time-offs/time-offs.module';
@@ -16,6 +17,7 @@ import { E2eI18nModule } from '@test/e2e/modules/i18n/e2e-i18n.module';
     E2eI18nModule,
     AuthenticationModule,
     UsersModule,
+    ClientsModule,
     TimeOffsModule,
     ScheduleTemplatesModule,
     ProceduresModule,
