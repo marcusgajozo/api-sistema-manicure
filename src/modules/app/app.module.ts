@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 
 import { GlobalExceptionFilter } from '../../common/filters/global-exception.filter';
@@ -12,9 +13,11 @@ import { ProceduresModule } from '../procedures/procedures.module';
 import { ScheduleTemplatesModule } from '../schedule-templates/schedule-templates.module';
 import { TimeOffsModule } from '../time-offs/time-offs.module';
 import { UsersModule } from '../users/users.module';
+import { corsConfig } from './configs/cors.config';
 
 @Module({
   imports: [
+    ConfigModule.forFeature(corsConfig),
     DatabaseModule,
     I18nModule,
     AuthenticationModule,

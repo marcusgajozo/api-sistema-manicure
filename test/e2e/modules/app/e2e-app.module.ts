@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GlobalExceptionFilter } from '@src/common/filters/global-exception.filter';
+import { corsConfig } from '@src/modules/app/configs/cors.config';
 import { AppointmentsModule } from '@src/modules/appointments/appointments.module';
 import { AuthenticationModule } from '@src/modules/authentication/authentication.module';
 import { JwtAuthGuard } from '@src/modules/authentication/guards/jwt-auth.guard';
@@ -14,6 +16,7 @@ import { E2eI18nModule } from '@test/e2e/modules/i18n/e2e-i18n.module';
 
 @Module({
   imports: [
+    ConfigModule.forFeature(corsConfig),
     E2eDatabaseModule,
     E2eI18nModule,
     AuthenticationModule,

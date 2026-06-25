@@ -1,12 +1,25 @@
+import type { ConfigType } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { I18nValidationPipe } from 'nestjs-i18n';
 
+import { loadAppEnv } from '../database/load-env';
 import { AppModule } from './modules/app/app.module';
+import {
+  buildCorsOptions,
+  corsConfig,
+} from './modules/app/configs/cors.config';
 
 async function bootstrap() {
+  loadAppEnv();
+
   const app = await NestFactory.create(AppModule);
+  const corsConfiguration = app.get<ConfigType<typeof corsConfig>>(
+    corsConfig.KEY,
+  );
+
+  app.enableCors(buildCorsOptions(corsConfiguration));
 
   app.use(cookieParser());
 
