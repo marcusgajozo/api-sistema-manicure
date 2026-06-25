@@ -20,9 +20,9 @@ import {
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 
-import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { CreateAppointmentDto } from '../dto/create-appointment.dto';
+import { UpdateAppointmentDto } from '../dto/update-appointment.dto';
+import { AppointmentsService } from '../services/appointments.service';
 
 @ApiBearerAuth()
 @Controller('appointments')
