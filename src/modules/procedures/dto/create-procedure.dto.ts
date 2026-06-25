@@ -33,5 +33,5 @@ export class CreateProcedureDto {
     message: i18nValidationMessage('validation.INVALID_INT'),
   })
   @Min(0)
-  durationMinutes?: number;
+  durationMinutes: number;
 }

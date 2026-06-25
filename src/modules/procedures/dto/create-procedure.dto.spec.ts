@@ -24,13 +24,47 @@ describe('CreateProcedureDto', () => {
     await expect(validate(dto)).resolves.toHaveLength(0);
   });
 
-  it('accepts payload without optional fields', async () => {
+  it('accepts payload without optional description', async () => {
     const dto = createValidCreateProcedureDto({
       description: undefined,
-      durationMinutes: undefined,
     });
 
     await expect(validate(dto)).resolves.toHaveLength(0);
+  });
+
+  it('rejects when durationMinutes is missing', async () => {
+    const dto = plainToInstance(CreateProcedureDto, {
+      name: 'Manicure',
+      price: 5000,
+      returnDays: 15,
+    });
+
+    const errors = await validate(dto);
+    expectValidationI18nKey(
+      errors,
+      'durationMinutes',
+      'validation.INVALID_INT',
+    );
+  });
+
+  it('rejects when durationMinutes is not an integer', async () => {
+    const dto = createValidCreateProcedureDto({ durationMinutes: 30.5 });
+
+    const errors = await validate(dto);
+    expectValidationI18nKey(
+      errors,
+      'durationMinutes',
+      'validation.INVALID_INT',
+    );
+  });
+
+  it('rejects negative durationMinutes', async () => {
+    const dto = createValidCreateProcedureDto({ durationMinutes: -1 });
+
+    const errors = await validate(dto);
+    expect(errors.some((error) => error.property === 'durationMinutes')).toBe(
+      true,
+    );
   });
 
   it('rejects when name is empty', async () => {
@@ -75,6 +109,7 @@ describe('CreateProcedureDto', () => {
       name: 'Manicure',
       price: 5000,
       returnDays: 15,
+      durationMinutes: 60,
       extraField: 'not allowed',
     });
 
