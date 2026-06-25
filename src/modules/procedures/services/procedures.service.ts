@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 
-import { CreateProcedureDto } from './dto/create-procedure.dto';
-import { UpdateProcedureDto } from './dto/update-procedure.dto';
-import { ProcedureEntity } from './entities/procedure.entity';
+import { CreateProcedureDto } from '../dto/create-procedure.dto';
+import { UpdateProcedureDto } from '../dto/update-procedure.dto';
+import { ProcedureEntity } from '../entities/procedure.entity';
 
 @Injectable()
 export class ProceduresService {

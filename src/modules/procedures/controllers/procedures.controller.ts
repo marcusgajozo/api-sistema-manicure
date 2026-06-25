@@ -21,10 +21,10 @@ import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 import { I18nTranslations } from '@/generated/i18n.generated';
 
-import { CreateProcedureDto } from './dto/create-procedure.dto';
-import { UpdateProcedureDto } from './dto/update-procedure.dto';
-import { ProcedureEntity } from './entities/procedure.entity';
-import { ProceduresService } from './procedures.service';
+import { CreateProcedureDto } from '../dto/create-procedure.dto';
+import { UpdateProcedureDto } from '../dto/update-procedure.dto';
+import { ProcedureEntity } from '../entities/procedure.entity';
+import { ProceduresService } from '../services/procedures.service';
 
 @ApiBearerAuth()
 @Controller('procedures')
