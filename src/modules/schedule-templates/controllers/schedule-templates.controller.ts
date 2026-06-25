@@ -20,9 +20,9 @@ import {
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 
-import { CreateScheduleTemplateDto } from './dto/create-schedule-template.dto';
-import { UpdateScheduleTemplateDto } from './dto/update-schedule-template.dto';
-import { ScheduleTemplatesService } from './schedule-templates.service';
+import { CreateScheduleTemplateDto } from '../dto/create-schedule-template.dto';
+import { UpdateScheduleTemplateDto } from '../dto/update-schedule-template.dto';
+import { ScheduleTemplatesService } from '../services/schedule-templates.service';
 
 @ApiBearerAuth()
 @Controller('schedule-templates')

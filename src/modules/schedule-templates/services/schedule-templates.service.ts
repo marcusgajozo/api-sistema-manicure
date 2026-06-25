@@ -11,9 +11,9 @@ import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { DayOfWeek } from '@/common/enums/day-of-week.enum';
 import { I18nTranslations } from '@/generated/i18n.generated';
 
-import { CreateScheduleTemplateDto } from './dto/create-schedule-template.dto';
-import { UpdateScheduleTemplateDto } from './dto/update-schedule-template.dto';
-import { ScheduleTemplateEntity } from './entities/schedule-template.entity';
+import { CreateScheduleTemplateDto } from '../dto/create-schedule-template.dto';
+import { UpdateScheduleTemplateDto } from '../dto/update-schedule-template.dto';
+import { ScheduleTemplateEntity } from '../entities/schedule-template.entity';
 
 @Injectable()
 export class ScheduleTemplatesService {
