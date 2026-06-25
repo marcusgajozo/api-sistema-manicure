@@ -1,4 +1,4 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
@@ -97,6 +97,27 @@ describe('ScheduleTemplatesService', () => {
         'template.dayOfWeek = :dayOfWeek',
         { dayOfWeek: DayOfWeek.MONDAY },
       );
+      expect(queryBuilder.andWhere).toHaveBeenCalledWith(
+        'template.startTime < :endTime',
+        { endTime: '12:00' },
+      );
+      expect(queryBuilder.andWhere).toHaveBeenCalledWith(
+        'template.endTime > :startTime',
+        { startTime: '09:00' },
+      );
+    });
+
+    it('returns false when no overlapping templates exist', async () => {
+      queryBuilder.getCount.mockResolvedValue(0);
+
+      await expect(
+        service.verifyConflictTemplate(
+          DayOfWeek.MONDAY,
+          '09:00',
+          '12:00',
+          userId,
+        ),
+      ).resolves.toBe(false);
     });
 
     it('excludes the current template when scheduleTemplateId is provided', async () => {
@@ -211,13 +232,10 @@ describe('ScheduleTemplatesService', () => {
       });
     });
 
-    it('throws NotFoundException when the schedule template does not exist', async () => {
+    it('returns null when the schedule template does not exist', async () => {
       scheduleTemplateRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('missing-id', userId)).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
+      await expect(service.findOne('missing-id', userId)).resolves.toBeNull();
     });
   });
 
@@ -271,12 +289,12 @@ describe('ScheduleTemplatesService', () => {
       expect(scheduleTemplateRepository.update).not.toHaveBeenCalled();
     });
 
-    it('throws NotFoundException when the schedule template does not exist', async () => {
+    it('returns null when the schedule template does not exist', async () => {
       scheduleTemplateRepository.findOne.mockResolvedValue(null);
 
       await expect(
         service.update('missing-id', updateScheduleTemplateDto, userId),
-      ).rejects.toThrow(NotFoundException);
+      ).resolves.toBeNull();
       expect(scheduleTemplateRepository.update).not.toHaveBeenCalled();
     });
   });
@@ -296,12 +314,10 @@ describe('ScheduleTemplatesService', () => {
       );
     });
 
-    it('throws NotFoundException when the schedule template does not exist', async () => {
+    it('returns null when the schedule template does not exist', async () => {
       scheduleTemplateRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove('missing-id', userId)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.remove('missing-id', userId)).resolves.toBeNull();
       expect(scheduleTemplateRepository.remove).not.toHaveBeenCalled();
     });
   });

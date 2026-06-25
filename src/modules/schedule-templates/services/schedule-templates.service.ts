@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
@@ -91,15 +87,9 @@ export class ScheduleTemplatesService {
   }
 
   async findOne(id: string, userId: string) {
-    const scheduleTemplate = await this.scheduleTemplateRepository.findOne({
+    return await this.scheduleTemplateRepository.findOne({
       where: { id, user: { id: userId } },
     });
-
-    if (!scheduleTemplate) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
-    }
-
-    return scheduleTemplate;
   }
 
   async update(
@@ -108,6 +98,10 @@ export class ScheduleTemplatesService {
     userId: string,
   ) {
     const scheduleTemplate = await this.findOne(id, userId);
+
+    if (!scheduleTemplate) {
+      return scheduleTemplate;
+    }
 
     const { dayOfWeek, endTime, startTime } = updateScheduleTemplateDto;
 
@@ -137,6 +131,11 @@ export class ScheduleTemplatesService {
 
   async remove(id: string, userId: string) {
     const scheduleTemplate = await this.findOne(id, userId);
+
+    if (!scheduleTemplate) {
+      return scheduleTemplate;
+    }
+
     return await this.scheduleTemplateRepository.remove(scheduleTemplate);
   }
 }

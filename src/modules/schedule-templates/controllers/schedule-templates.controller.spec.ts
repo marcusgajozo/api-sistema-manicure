@@ -1,5 +1,6 @@
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { I18nService } from 'nestjs-i18n';
 
 import { PaginatedResponseDto } from '@/common/dtos/pagination.dto';
 import { ResponseDto } from '@/common/dtos/response.dto';
@@ -19,6 +20,7 @@ describe('ScheduleTemplatesController', () => {
       'create' | 'findAll' | 'findOne' | 'update' | 'remove'
     >
   >;
+  let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
 
   const userId = 'user-id';
 
@@ -30,6 +32,9 @@ describe('ScheduleTemplatesController', () => {
       update: jest.fn(),
       remove: jest.fn(),
     };
+    i18n = {
+      translate: jest.fn((key: string) => key),
+    } as unknown as jest.Mocked<Pick<I18nService, 'translate'>>;
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ScheduleTemplatesController],
@@ -37,6 +42,10 @@ describe('ScheduleTemplatesController', () => {
         {
           provide: ScheduleTemplatesService,
           useValue: scheduleTemplatesService,
+        },
+        {
+          provide: I18nService,
+          useValue: i18n,
         },
       ],
     }).compile();
@@ -65,6 +74,16 @@ describe('ScheduleTemplatesController', () => {
         createScheduleTemplateDto,
         userId,
       );
+    });
+
+    it('propagates ConflictException when templates overlap', async () => {
+      scheduleTemplatesService.create.mockRejectedValue(
+        new ConflictException('validation.SCHEDULE_TEMPLATE_CONFLICT'),
+      );
+
+      await expect(
+        controller.create(createScheduleTemplateDto, userId),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -106,14 +125,13 @@ describe('ScheduleTemplatesController', () => {
       expect(result).toEqual(new ResponseDto(scheduleTemplate));
     });
 
-    it('propagates NotFoundException when the schedule template does not exist', async () => {
-      scheduleTemplatesService.findOne.mockRejectedValue(
-        new NotFoundException(),
-      );
+    it('throws NotFoundException when the schedule template does not exist', async () => {
+      scheduleTemplatesService.findOne.mockResolvedValue(null);
 
       await expect(controller.findOne('missing-id', userId)).rejects.toThrow(
         NotFoundException,
       );
+      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
   });
 
@@ -137,14 +155,23 @@ describe('ScheduleTemplatesController', () => {
       );
     });
 
-    it('propagates NotFoundException when the schedule template does not exist', async () => {
-      scheduleTemplatesService.update.mockRejectedValue(
-        new NotFoundException(),
-      );
+    it('throws NotFoundException when the schedule template does not exist', async () => {
+      scheduleTemplatesService.update.mockResolvedValue(null);
 
       await expect(
         controller.update('missing-id', updateScheduleTemplateDto, userId),
       ).rejects.toThrow(NotFoundException);
+      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
+    });
+
+    it('propagates ConflictException when the update overlaps another template', async () => {
+      scheduleTemplatesService.update.mockRejectedValue(
+        new ConflictException('validation.SCHEDULE_TEMPLATE_CONFLICT'),
+      );
+
+      await expect(
+        controller.update('template-id', updateScheduleTemplateDto, userId),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -163,14 +190,13 @@ describe('ScheduleTemplatesController', () => {
       );
     });
 
-    it('propagates NotFoundException when the schedule template does not exist', async () => {
-      scheduleTemplatesService.remove.mockRejectedValue(
-        new NotFoundException(),
-      );
+    it('throws NotFoundException when the schedule template does not exist', async () => {
+      scheduleTemplatesService.remove.mockResolvedValue(null);
 
       await expect(controller.remove('missing-id', userId)).rejects.toThrow(
         NotFoundException,
       );
+      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
   });
 });

@@ -5,12 +5,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { I18nService } from 'nestjs-i18n';
 
 import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
@@ -19,6 +21,7 @@ import {
 } from '@/common/dtos/pagination.dto';
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
+import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { CreateScheduleTemplateDto } from '../dto/create-schedule-template.dto';
 import { UpdateScheduleTemplateDto } from '../dto/update-schedule-template.dto';
@@ -29,6 +32,7 @@ import { ScheduleTemplatesService } from '../services/schedule-templates.service
 export class ScheduleTemplatesController {
   constructor(
     private readonly scheduleTemplatesService: ScheduleTemplatesService,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   @Post()
@@ -72,6 +76,10 @@ export class ScheduleTemplatesController {
       userId,
     );
 
+    if (!scheduleTemplate) {
+      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+    }
+
     return new ResponseDto(scheduleTemplate);
   }
 
@@ -82,11 +90,15 @@ export class ScheduleTemplatesController {
     @Body() updateScheduleTemplateDto: UpdateScheduleTemplateDto,
     @UserAuth('userId') userId: string,
   ) {
-    void (await this.scheduleTemplatesService.update(
+    const scheduleTemplate = await this.scheduleTemplatesService.update(
       id,
       updateScheduleTemplateDto,
       userId,
-    ));
+    );
+
+    if (!scheduleTemplate) {
+      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+    }
   }
 
   @Delete(':id')
@@ -95,6 +107,13 @@ export class ScheduleTemplatesController {
     @Param('id', VerifyUUIDIdPipe) id: string,
     @UserAuth('userId') userId: string,
   ) {
-    void (await this.scheduleTemplatesService.remove(id, userId));
+    const scheduleTemplate = await this.scheduleTemplatesService.remove(
+      id,
+      userId,
+    );
+
+    if (!scheduleTemplate) {
+      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+    }
   }
 }
