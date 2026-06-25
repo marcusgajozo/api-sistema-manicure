@@ -200,8 +200,8 @@ describe('Appointments (e2e)', () => {
         .set('Cookie', cookies)
         .send(
           createAppointmentPayload({
-            startDate: '2026-07-10T09:30:00.000Z',
-            endDate: '2026-07-10T10:30:00.000Z',
+            startDate: '2026-07-10T09:30:00',
+            endDate: '2026-07-10T10:30:00',
           }),
         )
         .expect(409);
@@ -224,8 +224,8 @@ describe('Appointments (e2e)', () => {
         .set('Cookie', cookies)
         .send(
           createAppointmentPayload({
-            startDate: '2026-07-02T09:00:00.000Z',
-            endDate: '2026-07-02T10:00:00.000Z',
+            startDate: '2026-07-02T09:00:00',
+            endDate: '2026-07-02T10:00:00',
           }),
         )
         .expect(409);

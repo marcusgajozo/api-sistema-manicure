@@ -12,8 +12,8 @@ function createValidCreateAppointmentDto(
     procedurePrice: 5000,
     clientName: 'Maria Silva',
     phoneClient: '11999998888',
-    startDate: '2026-07-01T09:00:00.000Z',
-    endDate: '2026-07-01T10:00:00.000Z',
+    startDate: '2026-07-01T09:00:00',
+    endDate: '2026-07-01T10:00:00',
     ...overrides,
   });
 }
@@ -23,6 +23,8 @@ describe('CreateAppointmentDto', () => {
     const dto = createValidCreateAppointmentDto();
 
     await expect(validate(dto)).resolves.toHaveLength(0);
+    expect(dto.startDate).toBeInstanceOf(Date);
+    expect(dto.endDate).toBeInstanceOf(Date);
   });
 
   it('accepts a valid payload with clientId and procedureId', async () => {
@@ -39,23 +41,35 @@ describe('CreateAppointmentDto', () => {
   });
 
   it('rejects when startDate is empty', async () => {
-    const dto = createValidCreateAppointmentDto({ startDate: '' });
+    const dto = createValidCreateAppointmentDto({
+      startDate: '' as unknown as Date,
+    });
 
     const errors = await validate(dto);
-    expectValidationI18nKey(errors, 'startDate', 'validation.NOT_EMPTY');
+    expectValidationI18nKey(
+      errors,
+      'startDate',
+      'validation.INVALID_DATE_STRING',
+    );
   });
 
   it('rejects when endDate is empty', async () => {
-    const dto = createValidCreateAppointmentDto({ endDate: '' });
+    const dto = createValidCreateAppointmentDto({
+      endDate: '' as unknown as Date,
+    });
 
     const errors = await validate(dto);
-    expectValidationI18nKey(errors, 'endDate', 'validation.NOT_EMPTY');
+    expectValidationI18nKey(
+      errors,
+      'endDate',
+      'validation.INVALID_DATE_STRING',
+    );
   });
 
   it('rejects when startDate is after endDate', async () => {
     const dto = createValidCreateAppointmentDto({
-      startDate: '2026-07-01T11:00:00.000Z',
-      endDate: '2026-07-01T10:00:00.000Z',
+      startDate: '2026-07-01T11:00:00' as unknown as Date,
+      endDate: '2026-07-01T10:00:00' as unknown as Date,
     });
 
     const errors = await validate(dto);
@@ -71,8 +85,8 @@ describe('CreateAppointmentDto', () => {
       procedurePrice: 5000,
       clientName: 'Maria Silva',
       phoneClient: '11999998888',
-      startDate: '2026-07-01T09:00:00.000Z',
-      endDate: '2026-07-01T10:00:00.000Z',
+      startDate: '2026-07-01T09:00:00',
+      endDate: '2026-07-01T10:00:00',
     });
 
     const errors = await validate(dto);
@@ -84,8 +98,8 @@ describe('CreateAppointmentDto', () => {
       procedureName: 'Manicure',
       procedurePrice: 5000,
       phoneClient: '11999998888',
-      startDate: '2026-07-01T09:00:00.000Z',
-      endDate: '2026-07-01T10:00:00.000Z',
+      startDate: '2026-07-01T09:00:00',
+      endDate: '2026-07-01T10:00:00',
     });
 
     const errors = await validate(dto);
@@ -109,8 +123,8 @@ describe('CreateAppointmentDto', () => {
       procedurePrice: 5000,
       clientName: 'Maria Silva',
       phoneClient: '11999998888',
-      startDate: '2026-07-01T09:00:00.000Z',
-      endDate: '2026-07-01T10:00:00.000Z',
+      startDate: '2026-07-01T09:00:00',
+      endDate: '2026-07-01T10:00:00',
       extraField: 'not allowed',
     });
 

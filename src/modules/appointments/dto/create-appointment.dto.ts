@@ -1,6 +1,7 @@
+import { Type } from 'class-transformer';
 import {
+  IsDate,
   IsInt,
-  IsISO8601,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -44,20 +45,16 @@ export class CreateAppointmentDto {
   @IsString()
   phoneClient?: string;
 
+  @Type(() => Date)
   @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
-  @IsISO8601(
-    {},
-    { message: i18nValidationMessage('validation.INVALID_DATE_STRING') },
-  )
+  @IsDate({ message: i18nValidationMessage('validation.INVALID_DATE_STRING') })
   @IsBeforeDate('endDate', {
     message: i18nValidationMessage('validation.IVALID_BEFORE_DATE'),
   })
-  startDate: string;
+  startDate!: Date;
 
+  @Type(() => Date)
   @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
-  @IsISO8601(
-    {},
-    { message: i18nValidationMessage('validation.INVALID_DATE_STRING') },
-  )
-  endDate: string;
+  @IsDate({ message: i18nValidationMessage('validation.INVALID_DATE_STRING') })
+  endDate!: Date;
 }

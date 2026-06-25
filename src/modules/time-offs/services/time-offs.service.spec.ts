@@ -43,8 +43,8 @@ describe('TimeOffsService', () => {
 
   describe('create', () => {
     const createTimeOffDto: CreateTimeOffDto = {
-      startDate: new Date('2026-07-01T09:00:00.000Z'),
-      endDate: new Date('2026-07-05T18:00:00.000Z'),
+      startDate: new Date('2026-07-01T09:00:00'),
+      endDate: new Date('2026-07-05T18:00:00'),
       reason: 'Férias',
     };
 

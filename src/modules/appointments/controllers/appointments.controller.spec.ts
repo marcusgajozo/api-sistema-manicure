@@ -50,8 +50,8 @@ describe('AppointmentsController', () => {
       procedurePrice: 5000,
       clientName: 'Maria Silva',
       phoneClient: '11999998888',
-      startDate: '2026-07-01T09:00:00.000Z',
-      endDate: '2026-07-01T10:00:00.000Z',
+      startDate: new Date('2026-07-01T09:00:00'),
+      endDate: new Date('2026-07-01T10:00:00'),
     };
 
     it('creates an appointment for the authenticated user', async () => {

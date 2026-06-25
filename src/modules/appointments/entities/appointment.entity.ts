@@ -25,10 +25,10 @@ export class AppointmentEntity extends BaseEntity {
   @Column({ name: 'phone_client', nullable: true })
   phoneClient?: string;
 
-  @Column({ type: 'timestamp', name: 'start_date' })
+  @Column({ name: 'start_date', type: 'timestamptz' })
   startDate: Date;
 
-  @Column({ type: 'timestamp', name: 'end_date' })
+  @Column({ name: 'end_date', type: 'timestamptz' })
   endDate: Date;
 
   @Column({

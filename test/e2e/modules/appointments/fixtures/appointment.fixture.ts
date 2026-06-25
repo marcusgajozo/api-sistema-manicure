@@ -18,8 +18,8 @@ export function createAppointmentPayload(
     procedurePrice: 5000,
     clientName: 'Maria Silva',
     phoneClient: '11999998888',
-    startDate: '2026-07-10T09:00:00.000Z',
-    endDate: '2026-07-10T10:00:00.000Z',
+    startDate: '2026-07-10T09:00:00',
+    endDate: '2026-07-10T10:00:00',
     ...overrides,
   };
 }

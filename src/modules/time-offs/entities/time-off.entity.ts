@@ -5,10 +5,10 @@ import { UserEntity } from '@/modules/users/entities/user.entity';
 
 @Entity('time_offs')
 export class TimeOffEntity extends BaseEntity {
-  @Column({ type: 'timestamp', name: 'start_date' })
+  @Column({ name: 'start_date', type: 'timestamptz' })
   startDate: Date;
 
-  @Column({ type: 'timestamp', name: 'end_date' })
+  @Column({ name: 'end_date', type: 'timestamptz' })
   endDate: Date;
 
   @Column({ type: 'varchar', length: 255, nullable: true })

@@ -26,21 +26,16 @@ export class AppointmentsService {
   ) {}
 
   async verifyConflictAppointment(
-    startDate: string | Date,
-    endDate: string | Date,
+    startDate: Date,
+    endDate: Date,
     userId: string,
     appointmentId?: string,
   ) {
-    const normalizedStartDate =
-      startDate instanceof Date ? startDate : new Date(startDate);
-    const normalizedEndDate =
-      endDate instanceof Date ? endDate : new Date(endDate);
-
     const conflictCount = await this.appointmentRepository.count({
       where: {
         user: { id: userId },
-        startDate: LessThan(normalizedEndDate),
-        endDate: MoreThan(normalizedStartDate),
+        startDate: LessThan(endDate),
+        endDate: MoreThan(startDate),
         ...(appointmentId ? { id: Not(appointmentId) } : {}),
       },
     });

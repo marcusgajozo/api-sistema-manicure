@@ -48,8 +48,8 @@ describe('AppointmentsService', () => {
     procedurePrice: 5000,
     clientName: 'Maria Silva',
     phoneClient: '11999998888',
-    startDate: '2026-07-01T09:00:00.000Z',
-    endDate: '2026-07-01T10:00:00.000Z',
+    startDate: new Date('2026-07-01T09:00:00'),
+    endDate: new Date('2026-07-01T10:00:00'),
   };
 
   beforeEach(async () => {
@@ -217,8 +217,8 @@ describe('AppointmentsService', () => {
     it('throws ConflictException when the updated schedule overlaps', async () => {
       const appointment = {
         id: 'appointment-id',
-        startDate: new Date('2026-07-01T09:00:00.000Z'),
-        endDate: new Date('2026-07-01T10:00:00.000Z'),
+        startDate: new Date('2026-07-01T09:00:00'),
+        endDate: new Date('2026-07-01T10:00:00'),
       } as AppointmentEntity;
 
       appointmentRepository.findOne.mockResolvedValue(appointment);
@@ -233,8 +233,8 @@ describe('AppointmentsService', () => {
     it('updates the appointment when it belongs to the user', async () => {
       const appointment = {
         id: 'appointment-id',
-        startDate: new Date('2026-07-01T09:00:00.000Z'),
-        endDate: new Date('2026-07-01T10:00:00.000Z'),
+        startDate: new Date('2026-07-01T09:00:00'),
+        endDate: new Date('2026-07-01T10:00:00'),
       } as AppointmentEntity;
       const updateResult = { affected: 1 } as UpdateResult;
 
