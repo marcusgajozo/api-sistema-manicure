@@ -23,9 +23,9 @@ import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
 import { I18nTranslations } from '@/generated/i18n.generated';
 
-import { ClientsService } from './clients.service';
-import { CreateClientDto } from './dto/create-client.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
+import { CreateClientDto } from '../dto/create-client.dto';
+import { UpdateClientDto } from '../dto/update-client.dto';
+import { ClientsService } from '../services/clients.service';
 
 @ApiBearerAuth()
 @Controller('clients')
