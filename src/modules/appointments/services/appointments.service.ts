@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
-import { Repository } from 'typeorm';
+import { LessThan, MoreThan, Not, Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { I18nTranslations } from '@/generated/i18n.generated';
@@ -26,28 +26,29 @@ export class AppointmentsService {
   ) {}
 
   async verifyConflictAppointment(
-    startDate: string,
-    endDate: string,
+    startDate: string | Date,
+    endDate: string | Date,
     userId: string,
     appointmentId?: string,
   ) {
-    const appointmentQuery = this.appointmentRepository
-      .createQueryBuilder('appointment')
-      .where('appointment.user.id = :userId', { userId })
-      .andWhere('appointment.startDate < :endDate', { endDate })
-      .andWhere('appointment.endDate > :startDate', { startDate });
+    const normalizedStartDate =
+      startDate instanceof Date ? startDate : new Date(startDate);
+    const normalizedEndDate =
+      endDate instanceof Date ? endDate : new Date(endDate);
 
-    if (appointmentId) {
-      appointmentQuery.andWhere('appointment.id != :appointmentId', {
-        appointmentId,
-      });
-    }
-
-    const conflictCount = await appointmentQuery.getCount();
+    const conflictCount = await this.appointmentRepository.count({
+      where: {
+        user: { id: userId },
+        startDate: LessThan(normalizedEndDate),
+        endDate: MoreThan(normalizedStartDate),
+        ...(appointmentId ? { id: Not(appointmentId) } : {}),
+      },
+    });
 
     const timeOffConflictCount = await this.timeOffRepository
       .createQueryBuilder('timeOff')
-      .where('timeOff.user.id = :userId', { userId })
+      .innerJoin('timeOff.user', 'user')
+      .where('user.id = :userId', { userId })
       .andWhere('timeOff.startDate < :endDate', { endDate })
       .andWhere('timeOff.endDate > :startDate', { startDate })
       .getCount();
@@ -89,8 +90,8 @@ export class AppointmentsService {
       procedureName,
       procedurePrice,
       user: { id: userId },
-      client: { id: clientId },
-      procedure: { id: procedureId },
+      ...(clientId ? { client: { id: clientId } } : {}),
+      ...(procedureId ? { procedure: { id: procedureId } } : {}),
     });
 
     return await this.appointmentRepository.save(appointment);
@@ -168,8 +169,8 @@ export class AppointmentsService {
       updatedAt,
       notifyReturnClient,
       statusAppointment,
-      client: { id: clientId },
-      procedure: { id: procedureId },
+      ...(clientId ? { client: { id: clientId } } : {}),
+      ...(procedureId ? { procedure: { id: procedureId } } : {}),
     });
   }
 
