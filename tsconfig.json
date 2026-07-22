@@ -18,14 +18,14 @@
       "@/*": ["./src/*"],
       "@src/*": ["./src/*"],
       "@test/*": ["./test/*"],
-      "@test/e2e/*": ["./test/e2e/*"]
+      "@test/e2e/*": ["./test/e2e/src/*", "./test/e2e/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "types": ["jest", "node"]

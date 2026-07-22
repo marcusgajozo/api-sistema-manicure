@@ -3,7 +3,6 @@ import type { ConfigType } from '@nestjs/config';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { e2eDatabaseConfig } from '@test/e2e/modules/database/configs/e2e-database.config';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -18,19 +17,7 @@ import { join } from 'path';
         password: config.password,
         database: config.database,
         schema: config.schema,
-        entities: [
-          join(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            '..',
-            'src',
-            'modules',
-            '**',
-            '*.entity.{ts,js}',
-          ),
-        ],
+        autoLoadEntities: true,
         synchronize: true,
         retryAttempts: 0,
       }),

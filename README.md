@@ -46,6 +46,8 @@ $ pnpm run start:prod
 
 ## Run tests
 
+Veja o [Guia de Testes](docs/testing.md) para mais informações sobre a estrutura e organização dos testes.
+
 ```bash
 # unit tests
 $ pnpm run test

@@ -19,7 +19,7 @@ import { i18nConfig } from './configs/i18n.config';
       useFactory: (config: ConfigType<typeof i18nConfig>) => ({
         fallbackLanguage: config.fallbackLanguage,
         loaderOptions: {
-          path: join(__dirname, 'languages'),
+          path: join(__dirname, 'languages').replace('/test/', '/'),
           watch: true,
         },
         typesOutputPath: join(

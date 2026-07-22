@@ -18,25 +18,11 @@ import { join } from 'path';
       useFactory: (config: ConfigType<typeof i18nConfig>) => ({
         fallbackLanguage: config.fallbackLanguage,
         loaderOptions: {
-          path: join(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            '..',
-            'src',
-            'modules',
-            'i18n',
-            'languages',
-          ),
+          path: join(process.cwd(), 'src', 'modules', 'i18n', 'languages'),
           watch: false,
         },
         typesOutputPath: join(
-          __dirname,
-          '..',
-          '..',
-          '..',
-          '..',
+          process.cwd(),
           'src',
           'generated',
           'i18n.generated.ts',

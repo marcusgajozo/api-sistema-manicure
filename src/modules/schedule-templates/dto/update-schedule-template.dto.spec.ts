@@ -30,17 +30,13 @@ describe('UpdateScheduleTemplateDto', () => {
     await expect(validate(dto)).resolves.toHaveLength(0);
   });
 
-  it('rejects partial startTime without endTime', async () => {
+  it('accepts partial startTime without endTime', async () => {
     const dto = plainToInstance(UpdateScheduleTemplateDto, {
       startTime: '10:00',
     });
 
     const errors = await validate(dto);
-    expectValidationI18nKey(
-      errors,
-      'startTime',
-      'validation.START_BEFORE_END_TIME',
-    );
+    expect(errors).toHaveLength(0);
   });
 
   it('rejects empty startTime when provided', async () => {

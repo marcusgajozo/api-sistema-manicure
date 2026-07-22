@@ -13,7 +13,7 @@ export function IsBeforeTime(
       return null;
     }
 
-    const match = /^(\d{2}):(\d{2})$/.exec(time);
+    const match = /^(\d{2}):(\d{2})(?::\d{2})?$/.exec(time);
 
     if (!match) {
       return null;
@@ -45,6 +45,10 @@ export function IsBeforeTime(
 
           const currentMinutes = toMinutes(value);
           const relatedMinutes = toMinutes(relatedValue);
+
+          if (relatedValue === undefined) {
+            return true;
+          }
 
           if (currentMinutes === null || relatedMinutes === null) {
             return false;

@@ -1,6 +1,7 @@
 ARG NODE_VERSION=24.15.0-alpine
+ARG NODE_LOCAL_VERSION=24.15.0
 
-FROM node:${NODE_VERSION} AS development
+FROM node:${NODE_LOCAL_VERSION} AS local
 
 WORKDIR /usr/src/app
 
