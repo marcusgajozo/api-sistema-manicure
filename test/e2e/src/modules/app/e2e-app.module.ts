@@ -13,9 +13,14 @@ import { TimeOffsModule } from '@src/modules/time-offs/time-offs.module';
 import { UsersModule } from '@src/modules/users/users.module';
 import { E2eDatabaseModule } from '@test/e2e/modules/database/e2e-database.module';
 import { E2eI18nModule } from '@test/e2e/modules/i18n/e2e-i18n.module';
+import { ClsModule } from 'nestjs-cls';
 
 @Module({
   imports: [
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
     ConfigModule.forFeature(corsConfig),
     E2eDatabaseModule,
     E2eI18nModule,
