@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { ClsModule } from 'nestjs-cls';
 
 import { GlobalExceptionFilter } from '../../common/filters/global-exception.filter';
 import { AppointmentsModule } from '../appointments/appointments.module';
@@ -17,6 +18,10 @@ import { corsConfig } from './configs/cors.config';
 
 @Module({
   imports: [
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
     ConfigModule.forFeature(corsConfig),
     DatabaseModule,
     I18nModule,
