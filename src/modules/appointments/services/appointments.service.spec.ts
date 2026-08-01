@@ -38,7 +38,7 @@ describe('AppointmentsService', () => {
     Pick<Repository<TimeOffEntity>, 'createQueryBuilder'>
   >;
   let timeOffQueryBuilder: ReturnType<typeof createMockQueryBuilder>;
-  let eventEmitter: jest.Mocked<Pick<EventEmitter2, 'emit'>>;
+  let eventEmitter: jest.Mocked<Pick<EventEmitter2, 'emit' | 'emitAsync'>>;
 
   const userId = 'user-id';
 
