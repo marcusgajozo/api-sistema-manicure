@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, MoreThan, Not, Repository } from 'typeorm';
 
@@ -9,6 +10,12 @@ import { TimeOffEntity } from '../../time-offs/entities/time-off.entity';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../dto/update-appointment.dto';
 import { AppointmentEntity } from '../entities/appointment.entity';
+import {
+  AppointmentCanceledEvent,
+  AppointmentCreatedEvent,
+  AppointmentEventEnum,
+  AppointmentRescheduledEvent,
+} from '../events/appointment-events';
 
 @Injectable()
 export class AppointmentsService {
@@ -17,6 +24,7 @@ export class AppointmentsService {
     private readonly appointmentRepository: Repository<AppointmentEntity>,
     @InjectRepository(TimeOffEntity)
     private readonly timeOffRepository: Repository<TimeOffEntity>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private getUserId(explicitUserId?: string): string {
@@ -88,7 +96,17 @@ export class AppointmentsService {
       ...(procedureId ? { procedure: { id: procedureId } } : {}),
     });
 
-    return await this.appointmentRepository.save(appointment);
+    const savedAppointment = await this.appointmentRepository.save(appointment);
+
+    await this.eventEmitter.emitAsync(
+      AppointmentEventEnum.CREATED,
+      new AppointmentCreatedEvent(
+        savedAppointment.id,
+        savedAppointment.startDate,
+      ),
+    );
+
+    return savedAppointment;
   }
 
   async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
@@ -150,7 +168,7 @@ export class AppointmentsService {
 
     const updatedAt = new Date();
 
-    return await this.appointmentRepository.update(appointment.id, {
+    const result = await this.appointmentRepository.update(appointment.id, {
       endDate,
       startDate,
       clientName,
@@ -164,12 +182,28 @@ export class AppointmentsService {
       ...(clientId ? { client: { id: clientId } } : {}),
       ...(procedureId ? { procedure: { id: procedureId } } : {}),
     });
+
+    if (startDate && startDate.getTime() !== appointment.startDate.getTime()) {
+      await this.eventEmitter.emitAsync(
+        AppointmentEventEnum.RESCHEDULED,
+        new AppointmentRescheduledEvent(id, startDate),
+      );
+    }
+
+    return result;
   }
 
   async remove(id: string, userId?: string) {
     const currentUserId = this.getUserId(userId);
     const appointment = await this.findOne(id, currentUserId);
     if (!appointment) return null;
-    return await this.appointmentRepository.remove(appointment);
+    const removed = await this.appointmentRepository.remove(appointment);
+
+    await this.eventEmitter.emitAsync(
+      AppointmentEventEnum.CANCELED,
+      new AppointmentCanceledEvent(id),
+    );
+
+    return removed;
   }
 }

@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GlobalExceptionFilter } from '@src/common/filters/global-exception.filter';
 import { corsConfig } from '@src/modules/app/configs/cors.config';
 import { AppointmentsModule } from '@src/modules/appointments/appointments.module';
 import { AuthenticationModule } from '@src/modules/authentication/authentication.module';
 import { JwtAuthGuard } from '@src/modules/authentication/guards/jwt-auth.guard';
 import { ClientsModule } from '@src/modules/clients/clients.module';
+import { NotificationsModule } from '@src/modules/notifications/notifications.module';
 import { ProceduresModule } from '@src/modules/procedures/procedures.module';
 import { ScheduleTemplatesModule } from '@src/modules/schedule-templates/schedule-templates.module';
 import { TimeOffsModule } from '@src/modules/time-offs/time-offs.module';
@@ -31,6 +33,8 @@ import { ClsModule } from 'nestjs-cls';
     ScheduleTemplatesModule,
     ProceduresModule,
     AppointmentsModule,
+    EventEmitterModule.forRoot(),
+    NotificationsModule,
   ],
   providers: [
     {

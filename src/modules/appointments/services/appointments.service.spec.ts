@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
@@ -37,6 +38,7 @@ describe('AppointmentsService', () => {
     Pick<Repository<TimeOffEntity>, 'createQueryBuilder'>
   >;
   let timeOffQueryBuilder: ReturnType<typeof createMockQueryBuilder>;
+  let eventEmitter: jest.Mocked<Pick<EventEmitter2, 'emit'>>;
 
   const userId = 'user-id';
 
@@ -66,6 +68,10 @@ describe('AppointmentsService', () => {
       createQueryBuilder: jest.fn(() => timeOffQueryBuilder) as never,
     };
 
+    eventEmitter = {
+      emit: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AppointmentsService,
@@ -76,6 +82,10 @@ describe('AppointmentsService', () => {
         {
           provide: getRepositoryToken(TimeOffEntity),
           useValue: timeOffRepository,
+        },
+        {
+          provide: EventEmitter2,
+          useValue: eventEmitter,
         },
       ],
     }).compile();
