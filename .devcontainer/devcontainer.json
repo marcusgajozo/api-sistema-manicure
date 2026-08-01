@@ -5,9 +5,5 @@
   "workspaceFolder": "/usr/src/app",
   "remoteUser": "node",
   "shutdownAction": "stopCompose",
-  "customizations": {
-    "vscode": {
-      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
-    }
-  }
+  "postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
 }
