@@ -28,7 +28,9 @@
     "noImplicitAny": true,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": ["./src/**/*", "./database/**/*", "./test/**/*"],
   "exclude": ["node_modules", "dist"]
