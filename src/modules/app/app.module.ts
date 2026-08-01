@@ -11,6 +11,7 @@ import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { ClientsModule } from '../clients/clients.module';
 import { DatabaseModule } from '../database/database.module';
 import { I18nModule } from '../i18n/i18n.module';
+import { NotificationTemplatesModule } from '../notification-templates/notification-templates.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { ProceduresModule } from '../procedures/procedures.module';
 import { ScheduleTemplatesModule } from '../schedule-templates/schedule-templates.module';
@@ -36,6 +37,7 @@ import { corsConfig } from './configs/cors.config';
     AppointmentsModule,
     EventEmitterModule.forRoot(),
     NotificationsModule,
+    NotificationTemplatesModule,
   ],
   providers: [
     {
