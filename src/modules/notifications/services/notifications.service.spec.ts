@@ -1,20 +1,34 @@
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { AppointmentEntity } from '../../appointments/entities/appointment.entity';
 import {
   AppointmentCanceledEvent,
   AppointmentCreatedEvent,
   AppointmentRescheduledEvent,
 } from '../../appointments/events/appointment-events';
+import { NotificationTemplatesService } from '../../notification-templates/services/notification-templates.service';
 import { NotificationEntity } from '../entities/notification.entity';
 import { NotificationTypeEnum } from '../enums/notification-type.enum';
 import { NotificationsService } from './notifications.service';
 
+const mockNotificationTemplatesService = {
+  findByType: jest.fn(),
+  compileTemplate: jest.fn(),
+};
+
 describe('NotificationsService', () => {
   let service: NotificationsService;
-  let notificationRepository: jest.Mocked<
-    Pick<Repository<NotificationEntity>, 'create' | 'save' | 'softDelete'>
+  let notificationRepository: {
+    create: jest.Mock;
+    save: jest.Mock;
+    softDelete: jest.Mock;
+    findAndCount: jest.Mock;
+  };
+  let appointmentRepository: jest.Mocked<
+    Pick<Repository<AppointmentEntity>, 'findOne'>
   >;
 
   const appointmentId = 'appointment-123';
@@ -25,14 +39,28 @@ describe('NotificationsService', () => {
       create: jest.fn(),
       save: jest.fn(),
       softDelete: jest.fn(),
+      findAndCount: jest.fn(),
+    };
+
+    appointmentRepository = {
+      findOne: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
+      imports: [EventEmitterModule.forRoot()],
       providers: [
         NotificationsService,
         {
           provide: getRepositoryToken(NotificationEntity),
           useValue: notificationRepository,
+        },
+        {
+          provide: getRepositoryToken(AppointmentEntity),
+          useValue: appointmentRepository,
+        },
+        {
+          provide: NotificationTemplatesService,
+          useValue: mockNotificationTemplatesService,
         },
       ],
     }).compile();
@@ -50,6 +78,22 @@ describe('NotificationsService', () => {
 
       const reminderDate = new Date('2026-08-04T10:00:00.000Z'); // 1 day before
       const followUpDate = new Date('2026-08-10T10:00:00.000Z'); // 5 days after
+
+      appointmentRepository.findOne.mockResolvedValue({
+        id: appointmentId,
+        startDate: appointmentDate,
+        user: { id: 'user-123' },
+        client: { name: 'Client' },
+        procedure: { name: 'Procedure' },
+      } as unknown as AppointmentEntity);
+
+      mockNotificationTemplatesService.findByType.mockImplementation(
+        (_userId: string, type: NotificationTypeEnum) => {
+          if (type === NotificationTypeEnum.CONFIRMATION)
+            return Promise.resolve(null);
+          return Promise.resolve({ content: 'Template' });
+        },
+      );
 
       const mockNotifications = [
         {

@@ -3,6 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
+  DeepPartial,
   FindOptionsWhere,
   LessThanOrEqual,
   MoreThanOrEqual,
@@ -12,12 +13,14 @@ import {
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
 
+import { AppointmentEntity } from '../../appointments/entities/appointment.entity';
 import {
   AppointmentCanceledEvent,
   AppointmentCreatedEvent,
   AppointmentEventEnum,
   AppointmentRescheduledEvent,
 } from '../../appointments/events/appointment-events';
+import { NotificationTemplatesService } from '../../notification-templates/services/notification-templates.service';
 import { NotificationEntity } from '../entities/notification.entity';
 import { NotificationTypeEnum } from '../enums/notification-type.enum';
 
@@ -28,6 +31,9 @@ export class NotificationsService implements OnModuleInit {
   constructor(
     @InjectRepository(NotificationEntity)
     private readonly notificationRepository: Repository<NotificationEntity>,
+    @InjectRepository(AppointmentEntity)
+    private readonly appointmentRepository: Repository<AppointmentEntity>,
+    private readonly templateService: NotificationTemplatesService,
   ) {}
 
   onModuleInit() {
@@ -71,25 +77,62 @@ export class NotificationsService implements OnModuleInit {
   async handleAppointmentCreated(event: AppointmentCreatedEvent) {
     this.logger.log(`Handling appointment.created for ${event.appointmentId}`);
 
+    const appointment = await this.appointmentRepository.findOne({
+      where: { id: event.appointmentId },
+      relations: ['user', 'client', 'procedure'],
+    });
+
+    if (!appointment) return;
+
     const reminderDate = new Date(event.appointmentDate);
     reminderDate.setDate(reminderDate.getDate() - 1);
 
     const followUpDate = new Date(event.appointmentDate);
     followUpDate.setDate(followUpDate.getDate() + 5);
 
-    const notifications = this.notificationRepository.create([
-      {
+    const userId = appointment.user?.id || '';
+    const reminderTemplate = await this.templateService.findByType(
+      userId,
+      NotificationTypeEnum.REMINDER,
+    );
+    const followUpTemplate = await this.templateService.findByType(
+      userId,
+      NotificationTypeEnum.FOLLOW_UP,
+    );
+    const confirmationTemplate = await this.templateService.findByType(
+      userId,
+      NotificationTypeEnum.CONFIRMATION,
+    );
+
+    const notificationsToCreate: DeepPartial<NotificationEntity>[] = [];
+
+    if (confirmationTemplate) {
+      notificationsToCreate.push({
+        appointment: { id: event.appointmentId },
+        type: NotificationTypeEnum.CONFIRMATION,
+        scheduledFor: new Date(), // Immediate
+      });
+    }
+
+    if (reminderTemplate) {
+      notificationsToCreate.push({
         appointment: { id: event.appointmentId },
         type: NotificationTypeEnum.REMINDER,
         scheduledFor: reminderDate,
-      },
-      {
+      });
+    }
+
+    if (followUpTemplate) {
+      notificationsToCreate.push({
         appointment: { id: event.appointmentId },
         type: NotificationTypeEnum.FOLLOW_UP,
         scheduledFor: followUpDate,
-      },
-    ]);
+      });
+    }
 
+    const notifications = this.notificationRepository.create(
+      notificationsToCreate,
+    );
     await this.notificationRepository.save(notifications);
   }
 

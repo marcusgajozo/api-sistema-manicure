@@ -1,4 +1,6 @@
 export enum NotificationTypeEnum {
+  CONFIRMATION = 'CONFIRMATION',
   REMINDER = 'REMINDER',
   FOLLOW_UP = 'FOLLOW_UP',
+  CANCELED = 'CANCELED',
 }
