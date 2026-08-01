@@ -10,7 +10,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { I18nService } from 'nestjs-i18n';
 
 import {
   PaginatedResponseDto,
@@ -18,7 +17,6 @@ import {
 } from '@/common/dtos/pagination.dto';
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
-import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { CreateProcedureDto } from '../dto/create-procedure.dto';
 import { UpdateProcedureDto } from '../dto/update-procedure.dto';
@@ -28,10 +26,7 @@ import { ProceduresService } from '../services/procedures.service';
 @ApiBearerAuth()
 @Controller('procedures')
 export class ProceduresController {
-  constructor(
-    private readonly proceduresService: ProceduresService,
-    private readonly i18n: I18nService<I18nTranslations>,
-  ) {}
+  constructor(private readonly proceduresService: ProceduresService) {}
 
   @Post()
   async create(@Body() createProcedureDto: CreateProcedureDto) {
@@ -57,7 +52,7 @@ export class ProceduresController {
     const procedure = await this.proceduresService.findOne(id);
 
     if (!procedure) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
 
     return new ResponseDto(procedure);
@@ -74,7 +69,7 @@ export class ProceduresController {
     );
 
     if (!procedure) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
   }
 
@@ -83,7 +78,7 @@ export class ProceduresController {
     const procedure = await this.proceduresService.remove(id);
 
     if (!procedure) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
   }
 }

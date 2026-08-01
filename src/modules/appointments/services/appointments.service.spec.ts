@@ -1,7 +1,5 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { I18nService } from 'nestjs-i18n';
 import { Repository, UpdateResult } from 'typeorm';
 
 import { TimeOffEntity } from '../../time-offs/entities/time-off.entity';
@@ -38,7 +36,6 @@ describe('AppointmentsService', () => {
   let timeOffRepository: jest.Mocked<
     Pick<Repository<TimeOffEntity>, 'createQueryBuilder'>
   >;
-  let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
   let timeOffQueryBuilder: ReturnType<typeof createMockQueryBuilder>;
 
   const userId = 'user-id';
@@ -69,10 +66,6 @@ describe('AppointmentsService', () => {
       createQueryBuilder: jest.fn(() => timeOffQueryBuilder) as never,
     };
 
-    i18n = {
-      translate: jest.fn((key: string) => key),
-    } as unknown as jest.Mocked<Pick<I18nService, 'translate'>>;
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AppointmentsService,
@@ -83,10 +76,6 @@ describe('AppointmentsService', () => {
         {
           provide: getRepositoryToken(TimeOffEntity),
           useValue: timeOffRepository,
-        },
-        {
-          provide: I18nService,
-          useValue: i18n,
         },
       ],
     }).compile();
@@ -127,27 +116,21 @@ describe('AppointmentsService', () => {
       );
     });
 
-    it('throws ConflictException when another appointment overlaps', async () => {
+    it('returns null when another appointment overlaps', async () => {
       appointmentRepository.count.mockResolvedValue(1);
 
       await expect(
         service.create(createAppointmentDto, userId),
-      ).rejects.toThrow(ConflictException);
-      expect(i18n.translate).toHaveBeenCalledWith(
-        'validation.APPOINTMENT_CONFLICT',
-      );
+      ).resolves.toBeNull();
       expect(appointmentRepository.save).not.toHaveBeenCalled();
     });
 
-    it('throws ConflictException when a time off overlaps', async () => {
+    it('returns null when a time off overlaps', async () => {
       timeOffQueryBuilder.getCount.mockResolvedValue(1);
 
       await expect(
         service.create(createAppointmentDto, userId),
-      ).rejects.toThrow(ConflictException);
-      expect(i18n.translate).toHaveBeenCalledWith(
-        'validation.APPOINTMENT_CONFLICT',
-      );
+      ).resolves.toBeNull();
       expect(appointmentRepository.save).not.toHaveBeenCalled();
     });
   });
@@ -188,13 +171,10 @@ describe('AppointmentsService', () => {
       });
     });
 
-    it('throws NotFoundException when the appointment does not exist', async () => {
+    it('returns null when the appointment does not exist', async () => {
       appointmentRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('missing-id', userId)).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
+      await expect(service.findOne('missing-id', userId)).resolves.toBeNull();
     });
   });
 
@@ -205,16 +185,16 @@ describe('AppointmentsService', () => {
       notifyReturnClient: NotifyReturnClientEnum.NOTIFIED,
     };
 
-    it('throws NotFoundException when the appointment does not exist', async () => {
+    it('returns null when the appointment does not exist', async () => {
       appointmentRepository.findOne.mockResolvedValue(null);
 
       await expect(
         service.update('missing-id', updateAppointmentDto, userId),
-      ).rejects.toThrow(NotFoundException);
+      ).resolves.toBeNull();
       expect(appointmentRepository.update).not.toHaveBeenCalled();
     });
 
-    it('throws ConflictException when the updated schedule overlaps', async () => {
+    it('returns null when the updated schedule overlaps', async () => {
       const appointment = {
         id: 'appointment-id',
         startDate: new Date('2026-07-01T09:00:00'),
@@ -226,7 +206,7 @@ describe('AppointmentsService', () => {
 
       await expect(
         service.update('appointment-id', updateAppointmentDto, userId),
-      ).rejects.toThrow(ConflictException);
+      ).resolves.toBeNull();
       expect(appointmentRepository.update).not.toHaveBeenCalled();
     });
 
@@ -264,12 +244,10 @@ describe('AppointmentsService', () => {
   });
 
   describe('remove', () => {
-    it('throws NotFoundException when the appointment does not exist', async () => {
+    it('returns null when the appointment does not exist', async () => {
       appointmentRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove('missing-id', userId)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.remove('missing-id', userId)).resolves.toBeNull();
       expect(appointmentRepository.remove).not.toHaveBeenCalled();
     });
 

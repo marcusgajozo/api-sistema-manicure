@@ -1,6 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { I18nService } from 'nestjs-i18n';
 
 import { PaginatedResponseDto } from '@/common/dtos/pagination.dto';
 import { ResponseDto } from '@/common/dtos/response.dto';
@@ -19,7 +18,6 @@ describe('TimeOffsController', () => {
       'create' | 'findAll' | 'findOne' | 'update' | 'remove'
     >
   >;
-  let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
 
   beforeEach(async () => {
     timeOffsService = {
@@ -29,20 +27,12 @@ describe('TimeOffsController', () => {
       update: jest.fn(),
       remove: jest.fn(),
     };
-    i18n = {
-      translate: jest.fn((key: string) => key),
-    } as unknown as jest.Mocked<Pick<I18nService, 'translate'>>;
-
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TimeOffsController],
       providers: [
         {
           provide: TimeOffsService,
           useValue: timeOffsService,
-        },
-        {
-          provide: I18nService,
-          useValue: i18n,
         },
       ],
     }).compile();
@@ -111,7 +101,6 @@ describe('TimeOffsController', () => {
       await expect(controller.findOne('missing-id')).rejects.toThrow(
         NotFoundException,
       );
-      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
   });
 
@@ -138,7 +127,6 @@ describe('TimeOffsController', () => {
       await expect(
         controller.update('missing-id', updateTimeOffDto),
       ).rejects.toThrow(NotFoundException);
-      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
   });
 
@@ -158,7 +146,6 @@ describe('TimeOffsController', () => {
       await expect(controller.remove('missing-id')).rejects.toThrow(
         NotFoundException,
       );
-      expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
   });
 });

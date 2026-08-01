@@ -1,12 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { DayOfWeek } from '@/common/enums/day-of-week.enum';
 import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
-import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { CreateScheduleTemplateDto } from '../dto/create-schedule-template.dto';
 import { UpdateScheduleTemplateDto } from '../dto/update-schedule-template.dto';
@@ -17,7 +15,6 @@ export class ScheduleTemplatesService {
   constructor(
     @InjectRepository(ScheduleTemplateEntity)
     private readonly scheduleTemplateRepository: Repository<ScheduleTemplateEntity>,
-    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   private getUserId(explicitUserId?: string): string {
@@ -66,9 +63,7 @@ export class ScheduleTemplatesService {
     );
 
     if (hasConflict) {
-      throw new ConflictException(
-        this.i18n.translate('validation.SCHEDULE_TEMPLATE_CONFLICT'),
-      );
+      return null;
     }
 
     const scheduleTemplate = this.scheduleTemplateRepository.create({
@@ -125,9 +120,7 @@ export class ScheduleTemplatesService {
     );
 
     if (hasConflict) {
-      throw new ConflictException(
-        this.i18n.translate('validation.SCHEDULE_TEMPLATE_CONFLICT'),
-      );
+      return null;
     }
 
     const updatedAt = new Date();

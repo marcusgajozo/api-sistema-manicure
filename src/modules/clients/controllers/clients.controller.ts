@@ -12,7 +12,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { I18nService } from 'nestjs-i18n';
 
 import {
   PaginatedResponseDto,
@@ -20,7 +19,6 @@ import {
 } from '@/common/dtos/pagination.dto';
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
-import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { CreateClientDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
@@ -29,10 +27,7 @@ import { ClientsService } from '../services/clients.service';
 @ApiBearerAuth()
 @Controller('clients')
 export class ClientsController {
-  constructor(
-    private readonly clientsService: ClientsService,
-    private readonly i18n: I18nService<I18nTranslations>,
-  ) {}
+  constructor(private readonly clientsService: ClientsService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -59,7 +54,7 @@ export class ClientsController {
     const client = await this.clientsService.findOne(id);
 
     if (!client) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
     return new ResponseDto(client);
   }
@@ -73,7 +68,7 @@ export class ClientsController {
     const client = await this.clientsService.update(id, updateClientDto);
 
     if (!client) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
   }
 
@@ -83,7 +78,7 @@ export class ClientsController {
     const client = await this.clientsService.remove(id);
 
     if (!client) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
   }
 }

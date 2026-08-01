@@ -1,15 +1,9 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { I18nService } from 'nestjs-i18n';
 import { LessThan, MoreThan, Not, Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
-import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { TimeOffEntity } from '../../time-offs/entities/time-off.entity';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
@@ -23,7 +17,6 @@ export class AppointmentsService {
     private readonly appointmentRepository: Repository<AppointmentEntity>,
     @InjectRepository(TimeOffEntity)
     private readonly timeOffRepository: Repository<TimeOffEntity>,
-    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   private getUserId(explicitUserId?: string): string {
@@ -79,9 +72,7 @@ export class AppointmentsService {
     );
 
     if (hasConflict) {
-      throw new ConflictException(
-        this.i18n.translate('validation.APPOINTMENT_CONFLICT'),
-      );
+      return null;
     }
 
     const appointment = this.appointmentRepository.create({
@@ -120,10 +111,6 @@ export class AppointmentsService {
       where: { id, user: { id: currentUserId } },
     });
 
-    if (!appointment) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
-    }
-
     return appointment;
   }
 
@@ -134,6 +121,7 @@ export class AppointmentsService {
   ) {
     const currentUserId = this.getUserId(userId);
     const appointment = await this.findOne(id, currentUserId);
+    if (!appointment) return null;
 
     const {
       endDate,
@@ -157,9 +145,7 @@ export class AppointmentsService {
     );
 
     if (hasConflict) {
-      throw new ConflictException(
-        this.i18n.translate('validation.APPOINTMENT_CONFLICT'),
-      );
+      return null;
     }
 
     const updatedAt = new Date();
@@ -183,6 +169,7 @@ export class AppointmentsService {
   async remove(id: string, userId?: string) {
     const currentUserId = this.getUserId(userId);
     const appointment = await this.findOne(id, currentUserId);
+    if (!appointment) return null;
     return await this.appointmentRepository.remove(appointment);
   }
 }

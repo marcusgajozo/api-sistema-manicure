@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -12,7 +13,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { I18nService } from 'nestjs-i18n';
 
 import {
   PaginatedResponseDto,
@@ -20,7 +20,6 @@ import {
 } from '@/common/dtos/pagination.dto';
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
-import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { CreateScheduleTemplateDto } from '../dto/create-schedule-template.dto';
 import { UpdateScheduleTemplateDto } from '../dto/update-schedule-template.dto';
@@ -31,13 +30,16 @@ import { ScheduleTemplatesService } from '../services/schedule-templates.service
 export class ScheduleTemplatesController {
   constructor(
     private readonly scheduleTemplatesService: ScheduleTemplatesService,
-    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createScheduleDto: CreateScheduleTemplateDto) {
-    void (await this.scheduleTemplatesService.create(createScheduleDto));
+    const template =
+      await this.scheduleTemplatesService.create(createScheduleDto);
+    if (!template) {
+      throw new ConflictException('validation.SCHEDULE_TEMPLATE_CONFLICT');
+    }
   }
 
   @Get()
@@ -61,7 +63,7 @@ export class ScheduleTemplatesController {
     const scheduleTemplate = await this.scheduleTemplatesService.findOne(id);
 
     if (!scheduleTemplate) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
 
     return new ResponseDto(scheduleTemplate);
@@ -73,13 +75,18 @@ export class ScheduleTemplatesController {
     @Param('id', VerifyUUIDIdPipe) id: string,
     @Body() updateScheduleTemplateDto: UpdateScheduleTemplateDto,
   ) {
-    const scheduleTemplate = await this.scheduleTemplatesService.update(
+    const scheduleTemplate = await this.scheduleTemplatesService.findOne(id);
+    if (!scheduleTemplate) {
+      throw new NotFoundException();
+    }
+
+    const updated = await this.scheduleTemplatesService.update(
       id,
       updateScheduleTemplateDto,
     );
 
-    if (!scheduleTemplate) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+    if (!updated) {
+      throw new ConflictException('validation.SCHEDULE_TEMPLATE_CONFLICT');
     }
   }
 
@@ -89,7 +96,7 @@ export class ScheduleTemplatesController {
     const scheduleTemplate = await this.scheduleTemplatesService.remove(id);
 
     if (!scheduleTemplate) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
   }
 }

@@ -44,8 +44,8 @@ describe('GlobalExceptionFilter', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
     expect(response.json).toHaveBeenCalledWith({
       statusCode: HttpStatus.BAD_REQUEST,
-      message: 'Invalid payload',
-      error: 'Bad Request',
+      message: 'translated:Invalid payload',
+      error: 'translated:exception.BAD_REQUEST',
     });
   });
 
@@ -66,7 +66,7 @@ describe('GlobalExceptionFilter', () => {
     expect(response.json).toHaveBeenCalledWith({
       statusCode: HttpStatus.BAD_REQUEST,
       message: ['translated:validation.INVALID_EMAIL'],
-      error: 'Bad Request',
+      error: 'translated:exception.BAD_REQUEST',
     });
     expect(i18n.t).toHaveBeenCalledWith('validation.INVALID_EMAIL', {
       args: { property: 'email' },
@@ -85,7 +85,7 @@ describe('GlobalExceptionFilter', () => {
     expect(response.json).toHaveBeenCalledWith({
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       message: 'Unexpected failure',
-      error: 'Internal Server Error',
+      error: 'translated:exception.INTERNAL_SERVER_ERROR',
     });
   });
 
@@ -98,7 +98,7 @@ describe('GlobalExceptionFilter', () => {
     expect(response.json).toHaveBeenCalledWith({
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       message: 'An unexpected error occurred',
-      error: 'Internal Server Error',
+      error: 'translated:exception.INTERNAL_SERVER_ERROR',
     });
   });
 });

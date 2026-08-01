@@ -12,7 +12,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { I18nService } from 'nestjs-i18n';
 
 import {
   PaginatedResponseDto,
@@ -20,7 +19,6 @@ import {
 } from '@/common/dtos/pagination.dto';
 import { ResponseDto } from '@/common/dtos/response.dto';
 import { VerifyUUIDIdPipe } from '@/common/pipes/verify-uuid-id.pipe';
-import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { CreateTimeOffDto } from '../dto/create-time-off.dto';
 import { UpdateTimeOffDto } from '../dto/update-time-off.dto';
@@ -29,10 +27,7 @@ import { TimeOffsService } from '../services/time-offs.service';
 @ApiBearerAuth()
 @Controller('time-offs')
 export class TimeOffsController {
-  constructor(
-    private readonly timeOffsService: TimeOffsService,
-    private readonly i18n: I18nService<I18nTranslations>,
-  ) {}
+  constructor(private readonly timeOffsService: TimeOffsService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -59,7 +54,7 @@ export class TimeOffsController {
     const timeOff = await this.timeOffsService.findOne(id);
 
     if (!timeOff) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
     return new ResponseDto(timeOff);
   }
@@ -73,7 +68,7 @@ export class TimeOffsController {
     const timeOff = await this.timeOffsService.update(id, updateTimeOffDto);
 
     if (!timeOff) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
   }
 
@@ -83,7 +78,7 @@ export class TimeOffsController {
     const timeOff = await this.timeOffsService.remove(id);
 
     if (!timeOff) {
-      throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
+      throw new NotFoundException();
     }
   }
 }

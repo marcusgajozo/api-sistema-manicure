@@ -65,10 +65,8 @@ describe('AppointmentsController', () => {
       );
     });
 
-    it('propagates ConflictException from the service', async () => {
-      appointmentsService.create.mockRejectedValue(
-        new ConflictException('validation.APPOINTMENT_CONFLICT'),
-      );
+    it('propagates ConflictException from the controller', async () => {
+      appointmentsService.create.mockResolvedValue(null as never);
 
       await expect(controller.create(createAppointmentDto)).rejects.toThrow(
         ConflictException,
@@ -112,10 +110,8 @@ describe('AppointmentsController', () => {
       expect(result).toEqual(new ResponseDto(appointment));
     });
 
-    it('propagates NotFoundException from the service', async () => {
-      appointmentsService.findOne.mockRejectedValue(
-        new NotFoundException('validation.NOT_FOUND'),
-      );
+    it('propagates NotFoundException from the controller', async () => {
+      appointmentsService.findOne.mockResolvedValue(null);
 
       await expect(controller.findOne('missing-id')).rejects.toThrow(
         NotFoundException,
@@ -129,6 +125,9 @@ describe('AppointmentsController', () => {
     };
 
     it('updates an appointment when it exists', async () => {
+      appointmentsService.findOne.mockResolvedValue({
+        id: 'appointment-id',
+      } as AppointmentEntity);
       appointmentsService.update.mockResolvedValue({ affected: 1 } as never);
 
       await expect(
@@ -140,10 +139,8 @@ describe('AppointmentsController', () => {
       );
     });
 
-    it('propagates NotFoundException from the service', async () => {
-      appointmentsService.update.mockRejectedValue(
-        new NotFoundException('validation.NOT_FOUND'),
-      );
+    it('propagates NotFoundException from the controller', async () => {
+      appointmentsService.findOne.mockResolvedValue(null);
 
       await expect(
         controller.update('missing-id', updateAppointmentDto),
@@ -163,10 +160,8 @@ describe('AppointmentsController', () => {
       expect(appointmentsService.remove).toHaveBeenCalledWith('appointment-id');
     });
 
-    it('propagates NotFoundException from the service', async () => {
-      appointmentsService.remove.mockRejectedValue(
-        new NotFoundException('validation.NOT_FOUND'),
-      );
+    it('propagates NotFoundException from the controller', async () => {
+      appointmentsService.remove.mockResolvedValue(null as never);
 
       await expect(controller.remove('missing-id')).rejects.toThrow(
         NotFoundException,

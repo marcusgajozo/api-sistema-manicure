@@ -5,6 +5,28 @@
 import type { Path } from "nestjs-i18n";
 /* prettier-ignore */
 export type I18nTranslations = {
+    "exception": {
+        "BAD_REQUEST": string;
+        "UNAUTHORIZED": string;
+        "NOT_FOUND": string;
+        "FORBIDDEN": string;
+        "NOT_ACCEPTABLE": string;
+        "REQUEST_TIMEOUT": string;
+        "CONFLICT": string;
+        "GONE": string;
+        "HTTP_VERSION_NOT_SUPPORTED": string;
+        "PAYLOAD_TOO_LARGE": string;
+        "UNSUPPORTED_MEDIA_TYPE": string;
+        "UNPROCESSABLE_ENTITY": string;
+        "INTERNAL_SERVER_ERROR": string;
+        "NOT_IMPLEMENTED": string;
+        "IM_A_TEAPOT": string;
+        "METHOD_NOT_ALLOWED": string;
+        "BAD_GATEWAY": string;
+        "SERVICE_UNAVAILABLE": string;
+        "GATEWAY_TIMEOUT": string;
+        "PRECONDITION_FAILED": string;
+    };
     "validation": {
         "NOT_EMPTY": string;
         "INVALID_EMAIL": string;

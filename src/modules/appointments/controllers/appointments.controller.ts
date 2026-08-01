@@ -1,10 +1,12 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -31,7 +33,11 @@ export class AppointmentsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createScheduleDto: CreateAppointmentDto) {
-    void (await this.appointmentsService.create(createScheduleDto));
+    const appointment =
+      await this.appointmentsService.create(createScheduleDto);
+    if (!appointment) {
+      throw new ConflictException('validation.APPOINTMENT_CONFLICT');
+    }
   }
 
   @Get()
@@ -57,6 +63,9 @@ export class AppointmentsController {
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', VerifyUUIDIdPipe) id: string) {
     const appointment = await this.appointmentsService.findOne(id);
+    if (!appointment) {
+      throw new NotFoundException();
+    }
 
     return new ResponseDto(appointment);
   }
@@ -67,12 +76,26 @@ export class AppointmentsController {
     @Param('id', VerifyUUIDIdPipe) id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
   ) {
-    void (await this.appointmentsService.update(id, updateAppointmentDto));
+    const appointment = await this.appointmentsService.findOne(id);
+    if (!appointment) {
+      throw new NotFoundException();
+    }
+
+    const updated = await this.appointmentsService.update(
+      id,
+      updateAppointmentDto,
+    );
+    if (!updated) {
+      throw new ConflictException('validation.APPOINTMENT_CONFLICT');
+    }
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', VerifyUUIDIdPipe) id: string) {
-    void (await this.appointmentsService.remove(id));
+    const appointment = await this.appointmentsService.remove(id);
+    if (!appointment) {
+      throw new NotFoundException();
+    }
   }
 }

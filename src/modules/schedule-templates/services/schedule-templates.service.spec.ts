@@ -1,7 +1,5 @@
-import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { I18nService } from 'nestjs-i18n';
 import { Repository, SelectQueryBuilder, UpdateResult } from 'typeorm';
 
 import { DayOfWeek } from '@/common/enums/day-of-week.enum';
@@ -31,7 +29,6 @@ describe('ScheduleTemplatesService', () => {
       'where' | 'andWhere' | 'getCount'
     >
   >;
-  let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
 
   const userId = 'user-id';
 
@@ -52,20 +49,12 @@ describe('ScheduleTemplatesService', () => {
       createQueryBuilder: jest.fn().mockReturnValue(queryBuilder),
     };
 
-    i18n = {
-      translate: jest.fn((key: string) => key),
-    } as unknown as jest.Mocked<Pick<I18nService, 'translate'>>;
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ScheduleTemplatesService,
         {
           provide: getRepositoryToken(ScheduleTemplateEntity),
           useValue: scheduleTemplateRepository,
-        },
-        {
-          provide: I18nService,
-          useValue: i18n,
         },
       ],
     }).compile();
@@ -178,15 +167,12 @@ describe('ScheduleTemplatesService', () => {
       );
     });
 
-    it('throws ConflictException when templates overlap', async () => {
+    it('returns null when templates overlap', async () => {
       queryBuilder.getCount.mockResolvedValue(1);
 
       await expect(
         service.create(createScheduleTemplateDto, userId),
-      ).rejects.toThrow(ConflictException);
-      expect(i18n.translate).toHaveBeenCalledWith(
-        'validation.SCHEDULE_TEMPLATE_CONFLICT',
-      );
+      ).resolves.toBeNull();
       expect(scheduleTemplateRepository.save).not.toHaveBeenCalled();
     });
   });
@@ -272,7 +258,7 @@ describe('ScheduleTemplatesService', () => {
       );
     });
 
-    it('throws ConflictException when the update overlaps another template', async () => {
+    it('returns null when the update overlaps another template', async () => {
       const scheduleTemplate = {
         id: 'template-id',
         dayOfWeek: DayOfWeek.MONDAY,
@@ -285,7 +271,7 @@ describe('ScheduleTemplatesService', () => {
 
       await expect(
         service.update('template-id', updateScheduleTemplateDto, userId),
-      ).rejects.toThrow(ConflictException);
+      ).resolves.toBeNull();
       expect(scheduleTemplateRepository.update).not.toHaveBeenCalled();
     });
 
