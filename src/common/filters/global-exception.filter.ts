@@ -115,10 +115,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       );
     }
 
+    const errorTranslationKey =
+      DEFAULT_HTTP_EXCEPTIONS[errorResponseName] || errorResponseName;
+    const translatedErrorName = this.i18n.t(errorTranslationKey, {
+      lang,
+      defaultValue: errorResponseName,
+    });
+
     response.status(status).json({
       statusCode: status,
       message,
-      error: errorResponseName,
+      error: translatedErrorName,
     });
   }
 
