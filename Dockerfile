@@ -1,7 +1,6 @@
 ARG NODE_VERSION=24.15.0-alpine
-ARG NODE_LOCAL_VERSION=24.15.0
 
-FROM node:${NODE_LOCAL_VERSION} AS local
+FROM mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie AS local
 
 WORKDIR /usr/src/app
 
