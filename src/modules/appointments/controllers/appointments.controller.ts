@@ -43,12 +43,14 @@ export class AppointmentsController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
-    const { limit, page } = paginationQueryDto;
+    const { limit, page, startDate, endDate } = paginationQueryDto;
 
     const { appointments, totalCount } = await this.appointmentsService.findAll(
       {
         limit,
         page,
+        startDate,
+        endDate,
       },
     );
 

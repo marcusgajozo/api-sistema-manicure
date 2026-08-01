@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsDate, IsInt, IsOptional, Min } from 'class-validator';
 
 export class PaginationQueryDto {
   @ApiPropertyOptional({ description: 'Current page', default: 1 })
@@ -17,6 +17,18 @@ export class PaginationQueryDto {
   @IsInt()
   @Min(1)
   limit: number = 10;
+
+  @ApiPropertyOptional({ description: 'Filter by start date' })
+  @IsOptional()
+  @Transform(({ value }: { value: string | number | Date }) => new Date(value))
+  @IsDate()
+  startDate?: Date;
+
+  @ApiPropertyOptional({ description: 'Filter by end date' })
+  @IsOptional()
+  @Transform(({ value }: { value: string | number | Date }) => new Date(value))
+  @IsDate()
+  endDate?: Date;
 }
 
 export class PaginationMetaDto {

@@ -1,7 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThan, MoreThan, Not, Repository } from 'typeorm';
+import {
+  Between,
+  FindOptionsWhere,
+  LessThan,
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
@@ -111,13 +120,26 @@ export class AppointmentsService {
 
   async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
     const currentUserId = this.getUserId(userId);
-    const { limit, page } = paginationQueryDto;
+    const { limit, page, startDate, endDate } = paginationQueryDto;
+
+    const whereClause: FindOptionsWhere<AppointmentEntity> = {
+      user: { id: currentUserId },
+    };
+
+    if (startDate && endDate) {
+      whereClause.startDate = Between(startDate, endDate);
+    } else if (startDate) {
+      whereClause.startDate = MoreThanOrEqual(startDate);
+    } else if (endDate) {
+      whereClause.startDate = LessThanOrEqual(endDate);
+    }
 
     const [appointments, totalCount] =
       await this.appointmentRepository.findAndCount({
-        where: { user: { id: currentUserId } },
-        skip: page - 1,
+        where: whereClause,
+        skip: (page - 1) * limit,
         take: limit,
+        order: { startDate: 'ASC' },
       });
 
     return { appointments, totalCount };
