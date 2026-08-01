@@ -4,6 +4,5 @@
   "service": "api-manicure",
   "workspaceFolder": "/usr/src/app",
   "remoteUser": "node",
-  "shutdownAction": "stopCompose",
-  "postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+  "shutdownAction": "stopCompose"
 }
