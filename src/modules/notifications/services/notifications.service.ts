@@ -1,7 +1,16 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  FindOptionsWhere,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
+
+import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
+import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
 
 import {
   AppointmentCanceledEvent,
@@ -23,6 +32,39 @@ export class NotificationsService implements OnModuleInit {
 
   onModuleInit() {
     this.logger.log('NotificationsService initialized!');
+  }
+
+  private getUserId(explicitUserId?: string): string {
+    const user = getLoggedInUserHelper();
+    return explicitUserId ?? user?.userId ?? '';
+  }
+
+  async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
+    const { limit, page, startDate, endDate } = paginationQueryDto;
+
+    const whereClause: FindOptionsWhere<NotificationEntity> = {
+      appointment: { user: { id: currentUserId } },
+    };
+
+    if (startDate && endDate) {
+      whereClause.scheduledFor = Between(startDate, endDate);
+    } else if (startDate) {
+      whereClause.scheduledFor = MoreThanOrEqual(startDate);
+    } else if (endDate) {
+      whereClause.scheduledFor = LessThanOrEqual(endDate);
+    }
+
+    const [notifications, totalCount] =
+      await this.notificationRepository.findAndCount({
+        where: whereClause,
+        relations: ['appointment'],
+        skip: (page - 1) * limit,
+        take: limit,
+        order: { scheduledFor: 'ASC' },
+      });
+
+    return { notifications, totalCount };
   }
 
   @OnEvent(AppointmentEventEnum.CREATED)
