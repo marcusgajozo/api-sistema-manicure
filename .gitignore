@@ -8,6 +8,8 @@
 !test
 !docs/**/*
 !docs
+!.devcontainer
+!.devcontainer/**/*
 !.husky/**/*
 !.husky
 

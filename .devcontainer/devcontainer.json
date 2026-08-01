@@ -1,0 +1,13 @@
+{
+  "name": "API Sistema Manicure",
+  "dockerComposeFile": ["../docker-compose.local.yaml"],
+  "service": "api-manicure",
+  "workspaceFolder": "/usr/src/app",
+  "remoteUser": "node",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  }
+}
