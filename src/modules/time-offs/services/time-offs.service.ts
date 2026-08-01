@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
+import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
 
 import { CreateTimeOffDto } from '../dto/create-time-off.dto';
 import { UpdateTimeOffDto } from '../dto/update-time-off.dto';
@@ -15,24 +16,31 @@ export class TimeOffsService {
     private readonly timeOffRepository: Repository<TimeOffEntity>,
   ) {}
 
-  async create(createTimeOffDto: CreateTimeOffDto, userId: string) {
+  private getUserId(explicitUserId?: string): string {
+    const user = getLoggedInUserHelper();
+    return explicitUserId ?? user?.userId ?? '';
+  }
+
+  async create(createTimeOffDto: CreateTimeOffDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const { endDate, reason, startDate } = createTimeOffDto;
 
     const timeOff = this.timeOffRepository.create({
       endDate,
       reason,
       startDate,
-      user: { id: userId },
+      user: { id: currentUserId },
     });
 
     return await this.timeOffRepository.save(timeOff);
   }
 
-  async findAll(paginationQueryDto: PaginationQueryDto, userId: string) {
+  async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const { limit, page } = paginationQueryDto;
 
     const [timeOffs, totalCount] = await this.timeOffRepository.findAndCount({
-      where: { user: { id: userId } },
+      where: { user: { id: currentUserId } },
       skip: page - 1,
       take: limit,
     });
@@ -40,16 +48,22 @@ export class TimeOffsService {
     return { timeOffs, totalCount };
   }
 
-  async findOne(id: string, userId: string) {
+  async findOne(id: string, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const timeOff = await this.timeOffRepository.findOne({
-      where: { id, user: { id: userId } },
+      where: { id, user: { id: currentUserId } },
     });
 
     return timeOff;
   }
 
-  async update(id: string, updateTimeOffDto: UpdateTimeOffDto, userId: string) {
-    const timeOff = await this.findOne(id, userId);
+  async update(
+    id: string,
+    updateTimeOffDto: UpdateTimeOffDto,
+    userId?: string,
+  ) {
+    const currentUserId = this.getUserId(userId);
+    const timeOff = await this.findOne(id, currentUserId);
 
     if (!timeOff) {
       return timeOff;
@@ -66,8 +80,9 @@ export class TimeOffsService {
     });
   }
 
-  async remove(id: string, userId: string) {
-    const timeOff = await this.findOne(id, userId);
+  async remove(id: string, userId?: string) {
+    const currentUserId = this.getUserId(userId);
+    const timeOff = await this.findOne(id, currentUserId);
 
     if (!timeOff) {
       return timeOff;

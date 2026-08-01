@@ -1,21 +1,21 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-import { i18nValidationMessage } from '@/common/helper/i18n-validation-message';
+import { i18nValidationMessageHelper } from '@/common/helper/i18n-validation-message.helper';
 
 export class SignInDto {
   @IsEmail(
     {},
     {
-      message: i18nValidationMessage('validation.INVALID_EMAIL'),
+      message: i18nValidationMessageHelper('validation.INVALID_EMAIL'),
     },
   )
   email: string;
 
   @IsString({
-    message: i18nValidationMessage('validation.INVALID_STRING'),
+    message: i18nValidationMessageHelper('validation.INVALID_STRING'),
   })
   @IsNotEmpty({
-    message: i18nValidationMessage('validation.NOT_EMPTY'),
+    message: i18nValidationMessageHelper('validation.NOT_EMPTY'),
   })
   password: string;
 }

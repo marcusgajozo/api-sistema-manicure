@@ -12,7 +12,6 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { I18nService } from 'nestjs-i18n';
 
-import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
@@ -35,22 +34,14 @@ export class ProceduresController {
   ) {}
 
   @Post()
-  async create(
-    @Body() createProcedureDto: CreateProcedureDto,
-    @UserAuth('userId') userId: string,
-  ) {
-    await this.proceduresService.create(createProcedureDto, userId);
+  async create(@Body() createProcedureDto: CreateProcedureDto) {
+    await this.proceduresService.create(createProcedureDto);
   }
 
   @Get()
-  async findAll(
-    @Query() paginationQueryDto: PaginationQueryDto,
-    @UserAuth('userId') userId: string,
-  ) {
-    const { procedures, totalCount } = await this.proceduresService.findAll(
-      paginationQueryDto,
-      userId,
-    );
+  async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
+    const { procedures, totalCount } =
+      await this.proceduresService.findAll(paginationQueryDto);
 
     const { limit = 10, page = 1 } = paginationQueryDto;
 
@@ -62,11 +53,8 @@ export class ProceduresController {
   }
 
   @Get(':id')
-  async findOne(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const procedure = await this.proceduresService.findOne(id, userId);
+  async findOne(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const procedure = await this.proceduresService.findOne(id);
 
     if (!procedure) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
@@ -79,12 +67,10 @@ export class ProceduresController {
   async update(
     @Param('id', VerifyUUIDIdPipe) id: string,
     @Body() updateProcedureDto: UpdateProcedureDto,
-    @UserAuth('userId') userId: string,
   ) {
     const procedure = await this.proceduresService.update(
       id,
       updateProcedureDto,
-      userId,
     );
 
     if (!procedure) {
@@ -93,11 +79,8 @@ export class ProceduresController {
   }
 
   @Delete(':id')
-  async remove(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const procedure = await this.proceduresService.remove(id, userId);
+  async remove(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const procedure = await this.proceduresService.remove(id);
 
     if (!procedure) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));

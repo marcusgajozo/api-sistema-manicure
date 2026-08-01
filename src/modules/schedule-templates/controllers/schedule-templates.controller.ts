@@ -14,7 +14,6 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { I18nService } from 'nestjs-i18n';
 
-import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
@@ -37,26 +36,17 @@ export class ScheduleTemplatesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() createScheduleDto: CreateScheduleTemplateDto,
-    @UserAuth('userId') userId: string,
-  ) {
-    void (await this.scheduleTemplatesService.create(
-      createScheduleDto,
-      userId,
-    ));
+  async create(@Body() createScheduleDto: CreateScheduleTemplateDto) {
+    void (await this.scheduleTemplatesService.create(createScheduleDto));
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() paginationQueryDto: PaginationQueryDto,
-    @UserAuth('userId') userId: string,
-  ) {
+  async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
     const { limit, page } = paginationQueryDto;
 
     const { scheduleTemplates, totalCount } =
-      await this.scheduleTemplatesService.findAll({ limit, page }, userId);
+      await this.scheduleTemplatesService.findAll({ limit, page });
 
     return new PaginatedResponseDto(scheduleTemplates, {
       page,
@@ -67,14 +57,8 @@ export class ScheduleTemplatesController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const scheduleTemplate = await this.scheduleTemplatesService.findOne(
-      id,
-      userId,
-    );
+  async findOne(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const scheduleTemplate = await this.scheduleTemplatesService.findOne(id);
 
     if (!scheduleTemplate) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
@@ -88,12 +72,10 @@ export class ScheduleTemplatesController {
   async update(
     @Param('id', VerifyUUIDIdPipe) id: string,
     @Body() updateScheduleTemplateDto: UpdateScheduleTemplateDto,
-    @UserAuth('userId') userId: string,
   ) {
     const scheduleTemplate = await this.scheduleTemplatesService.update(
       id,
       updateScheduleTemplateDto,
-      userId,
     );
 
     if (!scheduleTemplate) {
@@ -103,14 +85,8 @@ export class ScheduleTemplatesController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const scheduleTemplate = await this.scheduleTemplatesService.remove(
-      id,
-      userId,
-    );
+  async remove(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const scheduleTemplate = await this.scheduleTemplatesService.remove(id);
 
     if (!scheduleTemplate) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));

@@ -20,8 +20,6 @@ describe('AppointmentsController', () => {
     >
   >;
 
-  const userId = 'user-id';
-
   beforeEach(async () => {
     appointmentsService = {
       create: jest.fn(),
@@ -60,11 +58,10 @@ describe('AppointmentsController', () => {
       } as AppointmentEntity);
 
       await expect(
-        controller.create(createAppointmentDto, userId),
+        controller.create(createAppointmentDto),
       ).resolves.toBeUndefined();
       expect(appointmentsService.create).toHaveBeenCalledWith(
         createAppointmentDto,
-        userId,
       );
     });
 
@@ -73,9 +70,9 @@ describe('AppointmentsController', () => {
         new ConflictException('validation.APPOINTMENT_CONFLICT'),
       );
 
-      await expect(
-        controller.create(createAppointmentDto, userId),
-      ).rejects.toThrow(ConflictException);
+      await expect(controller.create(createAppointmentDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
   });
 
@@ -88,7 +85,7 @@ describe('AppointmentsController', () => {
         totalCount: 1,
       });
 
-      const result = await controller.findAll({ page: 1, limit: 10 }, userId);
+      const result = await controller.findAll({ page: 1, limit: 10 });
 
       expect(result).toEqual(
         new PaginatedResponseDto(appointments, {
@@ -97,10 +94,10 @@ describe('AppointmentsController', () => {
           totalCount: 1,
         }),
       );
-      expect(appointmentsService.findAll).toHaveBeenCalledWith(
-        { limit: 10, page: 1 },
-        userId,
-      );
+      expect(appointmentsService.findAll).toHaveBeenCalledWith({
+        limit: 10,
+        page: 1,
+      });
     });
   });
 
@@ -110,7 +107,7 @@ describe('AppointmentsController', () => {
 
       appointmentsService.findOne.mockResolvedValue(appointment);
 
-      const result = await controller.findOne('appointment-id', userId);
+      const result = await controller.findOne('appointment-id');
 
       expect(result).toEqual(new ResponseDto(appointment));
     });
@@ -120,7 +117,7 @@ describe('AppointmentsController', () => {
         new NotFoundException('validation.NOT_FOUND'),
       );
 
-      await expect(controller.findOne('missing-id', userId)).rejects.toThrow(
+      await expect(controller.findOne('missing-id')).rejects.toThrow(
         NotFoundException,
       );
     });
@@ -135,12 +132,11 @@ describe('AppointmentsController', () => {
       appointmentsService.update.mockResolvedValue({ affected: 1 } as never);
 
       await expect(
-        controller.update('appointment-id', updateAppointmentDto, userId),
+        controller.update('appointment-id', updateAppointmentDto),
       ).resolves.toBeUndefined();
       expect(appointmentsService.update).toHaveBeenCalledWith(
         'appointment-id',
         updateAppointmentDto,
-        userId,
       );
     });
 
@@ -150,7 +146,7 @@ describe('AppointmentsController', () => {
       );
 
       await expect(
-        controller.update('missing-id', updateAppointmentDto, userId),
+        controller.update('missing-id', updateAppointmentDto),
       ).rejects.toThrow(NotFoundException);
     });
   });
@@ -162,12 +158,9 @@ describe('AppointmentsController', () => {
       } as AppointmentEntity);
 
       await expect(
-        controller.remove('appointment-id', userId),
+        controller.remove('appointment-id'),
       ).resolves.toBeUndefined();
-      expect(appointmentsService.remove).toHaveBeenCalledWith(
-        'appointment-id',
-        userId,
-      );
+      expect(appointmentsService.remove).toHaveBeenCalledWith('appointment-id');
     });
 
     it('propagates NotFoundException from the service', async () => {
@@ -175,7 +168,7 @@ describe('AppointmentsController', () => {
         new NotFoundException('validation.NOT_FOUND'),
       );
 
-      await expect(controller.remove('missing-id', userId)).rejects.toThrow(
+      await expect(controller.remove('missing-id')).rejects.toThrow(
         NotFoundException,
       );
     });

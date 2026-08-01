@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
@@ -31,24 +30,20 @@ export class AppointmentsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() createScheduleDto: CreateAppointmentDto,
-    @UserAuth('userId') userId: string,
-  ) {
-    void (await this.appointmentsService.create(createScheduleDto, userId));
+  async create(@Body() createScheduleDto: CreateAppointmentDto) {
+    void (await this.appointmentsService.create(createScheduleDto));
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() paginationQueryDto: PaginationQueryDto,
-    @UserAuth('userId') userId: string,
-  ) {
+  async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
     const { limit, page } = paginationQueryDto;
 
     const { appointments, totalCount } = await this.appointmentsService.findAll(
-      { limit, page },
-      userId,
+      {
+        limit,
+        page,
+      },
     );
 
     return new PaginatedResponseDto(appointments, {
@@ -60,11 +55,8 @@ export class AppointmentsController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const appointment = await this.appointmentsService.findOne(id, userId);
+  async findOne(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const appointment = await this.appointmentsService.findOne(id);
 
     return new ResponseDto(appointment);
   }
@@ -74,21 +66,13 @@ export class AppointmentsController {
   async update(
     @Param('id', VerifyUUIDIdPipe) id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
-    @UserAuth('userId') userId: string,
   ) {
-    void (await this.appointmentsService.update(
-      id,
-      updateAppointmentDto,
-      userId,
-    ));
+    void (await this.appointmentsService.update(id, updateAppointmentDto));
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    void (await this.appointmentsService.remove(id, userId));
+  async remove(@Param('id', VerifyUUIDIdPipe) id: string) {
+    void (await this.appointmentsService.remove(id));
   }
 }

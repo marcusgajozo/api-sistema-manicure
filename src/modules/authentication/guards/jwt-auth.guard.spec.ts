@@ -1,6 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { createMockExecutionContext } from '@test/helpers/execution-context.helper';
+import { ClsServiceManager } from 'nestjs-cls';
 
 import { JwtAuthGuard } from './jwt-auth.guard';
 
@@ -40,10 +41,14 @@ describe('JwtAuthGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('returns user from handleRequest when authentication succeeds', () => {
+  it('returns user from handleRequest when authentication succeeds and populates CLS context', () => {
+    const cls = ClsServiceManager.getClsService();
     const user = { userId: 'user-id', email: 'user@example.com' };
 
-    expect(guard.handleRequest(null, user)).toEqual(user);
+    cls.run(() => {
+      expect(guard.handleRequest(null, user)).toEqual(user);
+      expect(cls.get('user')).toEqual(user);
+    });
   });
 
   it('throws UnauthorizedException when user is missing', () => {

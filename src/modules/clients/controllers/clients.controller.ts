@@ -14,7 +14,6 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { I18nService } from 'nestjs-i18n';
 
-import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
@@ -37,36 +36,27 @@ export class ClientsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() createClientDto: CreateClientDto,
-    @UserAuth('userId') userId: string,
-  ) {
-    await this.clientsService.create(createClientDto, userId);
+  async create(@Body() createClientDto: CreateClientDto) {
+    await this.clientsService.create(createClientDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() paginationQueryDto: PaginationQueryDto,
-    @UserAuth('userId') userId: string,
-  ) {
+  async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
     const { limit, page } = paginationQueryDto;
 
-    const { clients, totalCount } = await this.clientsService.findAll(
-      { limit, page },
-      userId,
-    );
+    const { clients, totalCount } = await this.clientsService.findAll({
+      limit,
+      page,
+    });
 
     return new PaginatedResponseDto(clients, { page, limit, totalCount });
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const client = await this.clientsService.findOne(id, userId);
+  async findOne(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const client = await this.clientsService.findOne(id);
 
     if (!client) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
@@ -79,13 +69,8 @@ export class ClientsController {
   async update(
     @Param('id', VerifyUUIDIdPipe) id: string,
     @Body() updateClientDto: UpdateClientDto,
-    @UserAuth('userId') userId: string,
   ) {
-    const client = await this.clientsService.update(
-      id,
-      updateClientDto,
-      userId,
-    );
+    const client = await this.clientsService.update(id, updateClientDto);
 
     if (!client) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
@@ -94,11 +79,8 @@ export class ClientsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const client = await this.clientsService.remove(id, userId);
+  async remove(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const client = await this.clientsService.remove(id);
 
     if (!client) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));

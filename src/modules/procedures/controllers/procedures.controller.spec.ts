@@ -21,8 +21,6 @@ describe('ProceduresController', () => {
   >;
   let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
 
-  const userId = 'user-id';
-
   beforeEach(async () => {
     proceduresService = {
       create: jest.fn(),
@@ -67,12 +65,9 @@ describe('ProceduresController', () => {
       } as ProcedureEntity);
 
       await expect(
-        controller.create(createProcedureDto, userId),
+        controller.create(createProcedureDto),
       ).resolves.toBeUndefined();
-      expect(proceduresService.create).toHaveBeenCalledWith(
-        createProcedureDto,
-        userId,
-      );
+      expect(proceduresService.create).toHaveBeenCalledWith(createProcedureDto);
     });
   });
 
@@ -85,7 +80,7 @@ describe('ProceduresController', () => {
         totalCount: 1,
       });
 
-      const result = await controller.findAll({ page: 1, limit: 10 }, userId);
+      const result = await controller.findAll({ page: 1, limit: 10 });
 
       expect(result).toEqual(
         new PaginatedResponseDto(procedures, {
@@ -94,10 +89,10 @@ describe('ProceduresController', () => {
           totalCount: 1,
         }),
       );
-      expect(proceduresService.findAll).toHaveBeenCalledWith(
-        { page: 1, limit: 10 },
-        userId,
-      );
+      expect(proceduresService.findAll).toHaveBeenCalledWith({
+        page: 1,
+        limit: 10,
+      });
     });
   });
 
@@ -107,7 +102,7 @@ describe('ProceduresController', () => {
 
       proceduresService.findOne.mockResolvedValue(procedure);
 
-      const result = await controller.findOne('procedure-id', userId);
+      const result = await controller.findOne('procedure-id');
 
       expect(result).toEqual(new ResponseDto(procedure));
     });
@@ -115,7 +110,7 @@ describe('ProceduresController', () => {
     it('throws NotFoundException when the procedure does not exist', async () => {
       proceduresService.findOne.mockResolvedValue(null);
 
-      await expect(controller.findOne('missing-id', userId)).rejects.toThrow(
+      await expect(controller.findOne('missing-id')).rejects.toThrow(
         NotFoundException,
       );
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
@@ -131,12 +126,11 @@ describe('ProceduresController', () => {
       proceduresService.update.mockResolvedValue({ affected: 1 } as never);
 
       await expect(
-        controller.update('procedure-id', updateProcedureDto, userId),
+        controller.update('procedure-id', updateProcedureDto),
       ).resolves.toBeUndefined();
       expect(proceduresService.update).toHaveBeenCalledWith(
         'procedure-id',
         updateProcedureDto,
-        userId,
       );
     });
 
@@ -144,7 +138,7 @@ describe('ProceduresController', () => {
       proceduresService.update.mockResolvedValue(null);
 
       await expect(
-        controller.update('missing-id', updateProcedureDto, userId),
+        controller.update('missing-id', updateProcedureDto),
       ).rejects.toThrow(NotFoundException);
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
@@ -154,19 +148,14 @@ describe('ProceduresController', () => {
     it('removes a procedure when it exists', async () => {
       proceduresService.remove.mockResolvedValue({ affected: 1 } as never);
 
-      await expect(
-        controller.remove('procedure-id', userId),
-      ).resolves.toBeUndefined();
-      expect(proceduresService.remove).toHaveBeenCalledWith(
-        'procedure-id',
-        userId,
-      );
+      await expect(controller.remove('procedure-id')).resolves.toBeUndefined();
+      expect(proceduresService.remove).toHaveBeenCalledWith('procedure-id');
     });
 
     it('throws NotFoundException when the procedure does not exist', async () => {
       proceduresService.remove.mockResolvedValue(null);
 
-      await expect(controller.remove('missing-id', userId)).rejects.toThrow(
+      await expect(controller.remove('missing-id')).rejects.toThrow(
         NotFoundException,
       );
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');

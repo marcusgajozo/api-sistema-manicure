@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
+import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
 
 import { CreateClientDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
@@ -15,23 +16,30 @@ export class ClientsService {
     private readonly clientRepository: Repository<ClientEntity>,
   ) {}
 
-  async create(createClientDto: CreateClientDto, userId: string) {
+  private getUserId(explicitUserId?: string): string {
+    const user = getLoggedInUserHelper();
+    return explicitUserId ?? user?.userId ?? '';
+  }
+
+  async create(createClientDto: CreateClientDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const { name, phone } = createClientDto;
 
     const client = this.clientRepository.create({
       name,
       phone,
-      user: { id: userId },
+      user: { id: currentUserId },
     });
 
     return await this.clientRepository.save(client);
   }
 
-  async findAll(paginationQueryDto: PaginationQueryDto, userId: string) {
+  async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const { limit, page } = paginationQueryDto;
 
     const [clients, totalCount] = await this.clientRepository.findAndCount({
-      where: { user: { id: userId } },
+      where: { user: { id: currentUserId } },
       skip: page - 1,
       take: limit,
     });
@@ -39,16 +47,18 @@ export class ClientsService {
     return { clients, totalCount };
   }
 
-  async findOne(id: string, userId: string) {
+  async findOne(id: string, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const client = await this.clientRepository.findOne({
-      where: { id, user: { id: userId } },
+      where: { id, user: { id: currentUserId } },
     });
 
     return client;
   }
 
-  async update(id: string, updateClientDto: UpdateClientDto, userId: string) {
-    const client = await this.findOne(id, userId);
+  async update(id: string, updateClientDto: UpdateClientDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
+    const client = await this.findOne(id, currentUserId);
 
     if (!client) {
       return client;
@@ -64,8 +74,9 @@ export class ClientsService {
     });
   }
 
-  async remove(id: string, userId: string) {
-    const client = await this.findOne(id, userId);
+  async remove(id: string, userId?: string) {
+    const currentUserId = this.getUserId(userId);
+    const client = await this.findOne(id, currentUserId);
 
     if (!client) {
       return client;

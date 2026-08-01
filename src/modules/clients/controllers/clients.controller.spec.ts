@@ -18,8 +18,6 @@ describe('ClientsController', () => {
   >;
   let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
 
-  const userId = 'user-id';
-
   beforeEach(async () => {
     clientsService = {
       create: jest.fn(),
@@ -60,13 +58,8 @@ describe('ClientsController', () => {
         id: 'client-id',
       } as ClientEntity);
 
-      await expect(
-        controller.create(createClientDto, userId),
-      ).resolves.toBeUndefined();
-      expect(clientsService.create).toHaveBeenCalledWith(
-        createClientDto,
-        userId,
-      );
+      await expect(controller.create(createClientDto)).resolves.toBeUndefined();
+      expect(clientsService.create).toHaveBeenCalledWith(createClientDto);
     });
   });
 
@@ -79,7 +72,7 @@ describe('ClientsController', () => {
         totalCount: 1,
       });
 
-      const result = await controller.findAll({ page: 1, limit: 10 }, userId);
+      const result = await controller.findAll({ page: 1, limit: 10 });
 
       expect(result).toEqual(
         new PaginatedResponseDto(clients, {
@@ -88,10 +81,10 @@ describe('ClientsController', () => {
           totalCount: 1,
         }),
       );
-      expect(clientsService.findAll).toHaveBeenCalledWith(
-        { limit: 10, page: 1 },
-        userId,
-      );
+      expect(clientsService.findAll).toHaveBeenCalledWith({
+        limit: 10,
+        page: 1,
+      });
     });
   });
 
@@ -101,7 +94,7 @@ describe('ClientsController', () => {
 
       clientsService.findOne.mockResolvedValue(client);
 
-      const result = await controller.findOne('client-id', userId);
+      const result = await controller.findOne('client-id');
 
       expect(result).toEqual(new ResponseDto(client));
     });
@@ -109,7 +102,7 @@ describe('ClientsController', () => {
     it('throws NotFoundException when the client does not exist', async () => {
       clientsService.findOne.mockResolvedValue(null);
 
-      await expect(controller.findOne('missing-id', userId)).rejects.toThrow(
+      await expect(controller.findOne('missing-id')).rejects.toThrow(
         NotFoundException,
       );
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
@@ -125,12 +118,11 @@ describe('ClientsController', () => {
       clientsService.update.mockResolvedValue({ affected: 1 } as never);
 
       await expect(
-        controller.update('client-id', updateClientDto, userId),
+        controller.update('client-id', updateClientDto),
       ).resolves.toBeUndefined();
       expect(clientsService.update).toHaveBeenCalledWith(
         'client-id',
         updateClientDto,
-        userId,
       );
     });
 
@@ -138,7 +130,7 @@ describe('ClientsController', () => {
       clientsService.update.mockResolvedValue(null);
 
       await expect(
-        controller.update('missing-id', updateClientDto, userId),
+        controller.update('missing-id', updateClientDto),
       ).rejects.toThrow(NotFoundException);
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
@@ -150,16 +142,14 @@ describe('ClientsController', () => {
         id: 'client-id',
       } as ClientEntity);
 
-      await expect(
-        controller.remove('client-id', userId),
-      ).resolves.toBeUndefined();
-      expect(clientsService.remove).toHaveBeenCalledWith('client-id', userId);
+      await expect(controller.remove('client-id')).resolves.toBeUndefined();
+      expect(clientsService.remove).toHaveBeenCalledWith('client-id');
     });
 
     it('throws NotFoundException when the client does not exist', async () => {
       clientsService.remove.mockResolvedValue(null);
 
-      await expect(controller.remove('missing-id', userId)).rejects.toThrow(
+      await expect(controller.remove('missing-id')).rejects.toThrow(
         NotFoundException,
       );
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');

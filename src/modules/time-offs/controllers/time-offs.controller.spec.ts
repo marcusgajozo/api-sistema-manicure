@@ -21,8 +21,6 @@ describe('TimeOffsController', () => {
   >;
   let i18n: jest.Mocked<Pick<I18nService, 'translate'>>;
 
-  const userId = 'user-id';
-
   beforeEach(async () => {
     timeOffsService = {
       create: jest.fn(),
@@ -65,12 +63,9 @@ describe('TimeOffsController', () => {
       } as TimeOffEntity);
 
       await expect(
-        controller.create(createTimeOffDto, userId),
+        controller.create(createTimeOffDto),
       ).resolves.toBeUndefined();
-      expect(timeOffsService.create).toHaveBeenCalledWith(
-        createTimeOffDto,
-        userId,
-      );
+      expect(timeOffsService.create).toHaveBeenCalledWith(createTimeOffDto);
     });
   });
 
@@ -83,7 +78,7 @@ describe('TimeOffsController', () => {
         totalCount: 1,
       });
 
-      const result = await controller.findAll({ page: 1, limit: 10 }, userId);
+      const result = await controller.findAll({ page: 1, limit: 10 });
 
       expect(result).toEqual(
         new PaginatedResponseDto(timeOffs, {
@@ -92,10 +87,10 @@ describe('TimeOffsController', () => {
           totalCount: 1,
         }),
       );
-      expect(timeOffsService.findAll).toHaveBeenCalledWith(
-        { limit: 10, page: 1 },
-        userId,
-      );
+      expect(timeOffsService.findAll).toHaveBeenCalledWith({
+        limit: 10,
+        page: 1,
+      });
     });
   });
 
@@ -105,7 +100,7 @@ describe('TimeOffsController', () => {
 
       timeOffsService.findOne.mockResolvedValue(timeOff);
 
-      const result = await controller.findOne('time-off-id', userId);
+      const result = await controller.findOne('time-off-id');
 
       expect(result).toEqual(new ResponseDto(timeOff));
     });
@@ -113,7 +108,7 @@ describe('TimeOffsController', () => {
     it('throws NotFoundException when the time off does not exist', async () => {
       timeOffsService.findOne.mockResolvedValue(null);
 
-      await expect(controller.findOne('missing-id', userId)).rejects.toThrow(
+      await expect(controller.findOne('missing-id')).rejects.toThrow(
         NotFoundException,
       );
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
@@ -129,12 +124,11 @@ describe('TimeOffsController', () => {
       timeOffsService.update.mockResolvedValue({ affected: 1 } as never);
 
       await expect(
-        controller.update('time-off-id', updateTimeOffDto, userId),
+        controller.update('time-off-id', updateTimeOffDto),
       ).resolves.toBeUndefined();
       expect(timeOffsService.update).toHaveBeenCalledWith(
         'time-off-id',
         updateTimeOffDto,
-        userId,
       );
     });
 
@@ -142,7 +136,7 @@ describe('TimeOffsController', () => {
       timeOffsService.update.mockResolvedValue(null);
 
       await expect(
-        controller.update('missing-id', updateTimeOffDto, userId),
+        controller.update('missing-id', updateTimeOffDto),
       ).rejects.toThrow(NotFoundException);
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');
     });
@@ -154,19 +148,14 @@ describe('TimeOffsController', () => {
         id: 'time-off-id',
       } as TimeOffEntity);
 
-      await expect(
-        controller.remove('time-off-id', userId),
-      ).resolves.toBeUndefined();
-      expect(timeOffsService.remove).toHaveBeenCalledWith(
-        'time-off-id',
-        userId,
-      );
+      await expect(controller.remove('time-off-id')).resolves.toBeUndefined();
+      expect(timeOffsService.remove).toHaveBeenCalledWith('time-off-id');
     });
 
     it('throws NotFoundException when the time off does not exist', async () => {
       timeOffsService.remove.mockResolvedValue(null);
 
-      await expect(controller.remove('missing-id', userId)).rejects.toThrow(
+      await expect(controller.remove('missing-id')).rejects.toThrow(
         NotFoundException,
       );
       expect(i18n.translate).toHaveBeenCalledWith('validation.NOT_FOUND');

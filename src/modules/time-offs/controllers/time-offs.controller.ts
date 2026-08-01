@@ -14,7 +14,6 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { I18nService } from 'nestjs-i18n';
 
-import { UserAuth } from '@/common/decorator/user-auth.decorator';
 import {
   PaginatedResponseDto,
   PaginationQueryDto,
@@ -37,36 +36,27 @@ export class TimeOffsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() createTimeOffDto: CreateTimeOffDto,
-    @UserAuth('userId') userId: string,
-  ) {
-    await this.timeOffsService.create(createTimeOffDto, userId);
+  async create(@Body() createTimeOffDto: CreateTimeOffDto) {
+    await this.timeOffsService.create(createTimeOffDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() paginationQueryDto: PaginationQueryDto,
-    @UserAuth('userId') userId: string,
-  ) {
+  async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
     const { limit, page } = paginationQueryDto;
 
-    const { timeOffs, totalCount } = await this.timeOffsService.findAll(
-      { limit, page },
-      userId,
-    );
+    const { timeOffs, totalCount } = await this.timeOffsService.findAll({
+      limit,
+      page,
+    });
 
     return new PaginatedResponseDto(timeOffs, { page, limit, totalCount });
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const timeOff = await this.timeOffsService.findOne(id, userId);
+  async findOne(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const timeOff = await this.timeOffsService.findOne(id);
 
     if (!timeOff) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
@@ -79,13 +69,8 @@ export class TimeOffsController {
   async update(
     @Param('id', VerifyUUIDIdPipe) id: string,
     @Body() updateTimeOffDto: UpdateTimeOffDto,
-    @UserAuth('userId') userId: string,
   ) {
-    const timeOff = await this.timeOffsService.update(
-      id,
-      updateTimeOffDto,
-      userId,
-    );
+    const timeOff = await this.timeOffsService.update(id, updateTimeOffDto);
 
     if (!timeOff) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));
@@ -94,11 +79,8 @@ export class TimeOffsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(
-    @Param('id', VerifyUUIDIdPipe) id: string,
-    @UserAuth('userId') userId: string,
-  ) {
-    const timeOff = await this.timeOffsService.remove(id, userId);
+  async remove(@Param('id', VerifyUUIDIdPipe) id: string) {
+    const timeOff = await this.timeOffsService.remove(id);
 
     if (!timeOff) {
       throw new NotFoundException(this.i18n.translate('validation.NOT_FOUND'));

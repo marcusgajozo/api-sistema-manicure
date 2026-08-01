@@ -8,6 +8,7 @@ import { I18nService } from 'nestjs-i18n';
 import { LessThan, MoreThan, Not, Repository } from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
+import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
 import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { TimeOffEntity } from '../../time-offs/entities/time-off.entity';
@@ -25,15 +26,21 @@ export class AppointmentsService {
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
+  private getUserId(explicitUserId?: string): string {
+    const user = getLoggedInUserHelper();
+    return explicitUserId ?? user?.userId ?? '';
+  }
+
   async verifyConflictAppointment(
     startDate: Date,
     endDate: Date,
-    userId: string,
+    userId?: string,
     appointmentId?: string,
   ) {
+    const currentUserId = this.getUserId(userId);
     const conflictCount = await this.appointmentRepository.count({
       where: {
-        user: { id: userId },
+        user: { id: currentUserId },
         startDate: LessThan(endDate),
         endDate: MoreThan(startDate),
         ...(appointmentId ? { id: Not(appointmentId) } : {}),
@@ -43,7 +50,7 @@ export class AppointmentsService {
     const timeOffConflictCount = await this.timeOffRepository
       .createQueryBuilder('timeOff')
       .innerJoin('timeOff.user', 'user')
-      .where('user.id = :userId', { userId })
+      .where('user.id = :userId', { userId: currentUserId })
       .andWhere('timeOff.startDate < :endDate', { endDate })
       .andWhere('timeOff.endDate > :startDate', { startDate })
       .getCount();
@@ -51,7 +58,8 @@ export class AppointmentsService {
     return conflictCount > 0 || timeOffConflictCount > 0;
   }
 
-  async create(createAppointmentDto: CreateAppointmentDto, userId: string) {
+  async create(createAppointmentDto: CreateAppointmentDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const {
       endDate,
       startDate,
@@ -67,7 +75,7 @@ export class AppointmentsService {
     const hasConflict = await this.verifyConflictAppointment(
       startDate,
       endDate,
-      userId,
+      currentUserId,
     );
 
     if (hasConflict) {
@@ -84,7 +92,7 @@ export class AppointmentsService {
       procedureFollowUpDays,
       procedureName,
       procedurePrice,
-      user: { id: userId },
+      user: { id: currentUserId },
       ...(clientId ? { client: { id: clientId } } : {}),
       ...(procedureId ? { procedure: { id: procedureId } } : {}),
     });
@@ -92,12 +100,13 @@ export class AppointmentsService {
     return await this.appointmentRepository.save(appointment);
   }
 
-  async findAll(paginationQueryDto: PaginationQueryDto, userId: string) {
+  async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const { limit, page } = paginationQueryDto;
 
     const [appointments, totalCount] =
       await this.appointmentRepository.findAndCount({
-        where: { user: { id: userId } },
+        where: { user: { id: currentUserId } },
         skip: page - 1,
         take: limit,
       });
@@ -105,9 +114,10 @@ export class AppointmentsService {
     return { appointments, totalCount };
   }
 
-  async findOne(id: string, userId: string) {
+  async findOne(id: string, userId?: string) {
+    const currentUserId = this.getUserId(userId);
     const appointment = await this.appointmentRepository.findOne({
-      where: { id, user: { id: userId } },
+      where: { id, user: { id: currentUserId } },
     });
 
     if (!appointment) {
@@ -120,9 +130,10 @@ export class AppointmentsService {
   async update(
     id: string,
     updateAppointmentDto: UpdateAppointmentDto,
-    userId: string,
+    userId?: string,
   ) {
-    const appointment = await this.findOne(id, userId);
+    const currentUserId = this.getUserId(userId);
+    const appointment = await this.findOne(id, currentUserId);
 
     const {
       endDate,
@@ -141,7 +152,7 @@ export class AppointmentsService {
     const hasConflict = await this.verifyConflictAppointment(
       startDate ?? appointment.startDate,
       endDate ?? appointment.endDate,
-      userId,
+      currentUserId,
       id,
     );
 
@@ -169,8 +180,9 @@ export class AppointmentsService {
     });
   }
 
-  async remove(id: string, userId: string) {
-    const appointment = await this.findOne(id, userId);
+  async remove(id: string, userId?: string) {
+    const currentUserId = this.getUserId(userId);
+    const appointment = await this.findOne(id, currentUserId);
     return await this.appointmentRepository.remove(appointment);
   }
 }
