@@ -5,7 +5,7 @@ FROM node:${NODE_LOCAL_VERSION} AS local
 
 WORKDIR /usr/src/app
 
-CMD ["npm", "run", "start:dev"]
+CMD ["tail", "-f", "/dev/null"]
 
 FROM node:${NODE_VERSION} AS builder
 
