@@ -15,6 +15,29 @@ import {
   I18nValidationException,
 } from 'nestjs-i18n';
 
+const DEFAULT_HTTP_EXCEPTIONS: Record<string, string> = {
+  'Bad Request': 'exception.BAD_REQUEST',
+  Unauthorized: 'exception.UNAUTHORIZED',
+  'Not Found': 'exception.NOT_FOUND',
+  Forbidden: 'exception.FORBIDDEN',
+  'Not Acceptable': 'exception.NOT_ACCEPTABLE',
+  'Request Timeout': 'exception.REQUEST_TIMEOUT',
+  Conflict: 'exception.CONFLICT',
+  Gone: 'exception.GONE',
+  'Http Version Not Supported': 'exception.HTTP_VERSION_NOT_SUPPORTED',
+  'Payload Too Large': 'exception.PAYLOAD_TOO_LARGE',
+  'Unsupported Media Type': 'exception.UNSUPPORTED_MEDIA_TYPE',
+  'Unprocessable Entity': 'exception.UNPROCESSABLE_ENTITY',
+  'Internal Server Error': 'exception.INTERNAL_SERVER_ERROR',
+  'Not Implemented': 'exception.NOT_IMPLEMENTED',
+  'I Am A Teapot': 'exception.IM_A_TEAPOT',
+  'Method Not Allowed': 'exception.METHOD_NOT_ALLOWED',
+  'Bad Gateway': 'exception.BAD_GATEWAY',
+  'Service Unavailable': 'exception.SERVICE_UNAVAILABLE',
+  'Gateway Timeout': 'exception.GATEWAY_TIMEOUT',
+  'Precondition Failed': 'exception.PRECONDITION_FAILED',
+};
+
 @Injectable()
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -30,24 +53,46 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const lang = i18n?.lang || 'pt-BR';
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let error = 'Internal Server Error';
+    let errorResponseName = 'Internal Server Error';
     let message: string | string[] = 'An unexpected error occurred';
 
     if (exception instanceof I18nValidationException) {
       status = exception.getStatus();
-      error = 'Bad Request';
+      errorResponseName = 'Bad Request';
       message = this.formatI18nErrors(exception.errors, lang);
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
-      const res = exception.getResponse() as
-        | string
-        | { message?: string | string[]; error?: string };
+      const res: unknown = exception.getResponse();
 
       if (typeof res === 'object' && res !== null) {
-        error = res.error || 'Error';
-        message = res.message || 'An error occurred';
-      } else {
-        message = res;
+        const resObj = res as { message?: string | string[]; error?: string };
+        errorResponseName = resObj.error || 'Error';
+        const rawMessage = resObj.message;
+
+        if (typeof rawMessage === 'string') {
+          const translationKey =
+            DEFAULT_HTTP_EXCEPTIONS[rawMessage] || rawMessage;
+          message = this.i18n.t(translationKey, {
+            lang,
+            defaultValue: rawMessage,
+          });
+        } else if (Array.isArray(rawMessage)) {
+          message = rawMessage.map((msg) => {
+            const translationKey = DEFAULT_HTTP_EXCEPTIONS[msg] || msg;
+            return this.i18n.t(translationKey, {
+              lang,
+              defaultValue: msg,
+            });
+          });
+        } else {
+          message = 'An error occurred';
+        }
+      } else if (typeof res === 'string') {
+        const translationKey = DEFAULT_HTTP_EXCEPTIONS[res] || res;
+        message = this.i18n.t(translationKey, {
+          lang,
+          defaultValue: res,
+        });
       }
     } else if (exception instanceof Error) {
       message = exception.message;
@@ -73,7 +118,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       message,
-      error,
+      error: errorResponseName,
     });
   }
 
@@ -83,10 +128,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   ): string[] {
     const messages: string[] = [];
 
-    for (const error of errors) {
-      const property = error.property;
-      if (error.constraints) {
-        for (const value of Object.values(error.constraints)) {
+    for (const errItem of errors) {
+      const property = errItem.property;
+      if (errItem.constraints) {
+        for (const value of Object.values(errItem.constraints)) {
           if (typeof value === 'string' && value.includes('|')) {
             const [translationKey, argsString] = value.split('|');
             let args: Record<string, unknown> = {};
@@ -119,8 +164,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           }
         }
       }
-      if (error.children && error.children.length > 0) {
-        messages.push(...this.formatI18nErrors(error.children, lang));
+      if (errItem.children && errItem.children.length > 0) {
+        messages.push(...this.formatI18nErrors(errItem.children, lang));
       }
     }
 
