@@ -63,6 +63,7 @@ async function seedUser(): Promise<void> {
 }
 
 seedUser().catch((error: unknown) => {
-  console.error('Falha ao criar usuário seed:', error);
+  const message = error instanceof Error ? error.message : String(error);
+  console.error('Falha ao criar usuário seed:', message);
   process.exit(1);
 });
