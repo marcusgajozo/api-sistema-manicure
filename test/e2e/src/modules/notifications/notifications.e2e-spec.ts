@@ -74,9 +74,10 @@ describe('Notifications Flow (e2e)', () => {
         withDeleted: true,
       });
 
-    expect(notifications).toHaveLength(2);
+    expect(notifications).toHaveLength(3);
     expect(notifications[0].type).toBe('REMINDER');
     expect(notifications[1].type).toBe('FOLLOW_UP');
+    expect(notifications[2].type).toBe('CONFIRMATION');
   });
 
   it('should soft delete notifications when an appointment is canceled', async () => {
@@ -161,8 +162,8 @@ describe('Notifications Flow (e2e)', () => {
         withDeleted: true,
       });
 
-    // 2 canceled (soft deleted) + 2 new (active)
-    expect(allNotifications).toHaveLength(4);
+    // 3 canceled (soft deleted) + 3 new (active)
+    expect(allNotifications).toHaveLength(6);
 
     const activeNotifications = allNotifications.filter(
       (n: NotificationEntity) => n.deletedAt === null,
@@ -171,7 +172,7 @@ describe('Notifications Flow (e2e)', () => {
       (n: NotificationEntity) => n.deletedAt !== null,
     );
 
-    expect(activeNotifications).toHaveLength(2);
-    expect(deletedNotifications).toHaveLength(2);
+    expect(activeNotifications).toHaveLength(3);
+    expect(deletedNotifications).toHaveLength(3);
   });
 });

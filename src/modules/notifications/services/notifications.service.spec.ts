@@ -9,15 +9,9 @@ import {
   AppointmentCreatedEvent,
   AppointmentRescheduledEvent,
 } from '../../appointments/events/appointment-events';
-import { NotificationTemplatesService } from '../../notification-templates/services/notification-templates.service';
 import { NotificationEntity } from '../entities/notification.entity';
 import { NotificationTypeEnum } from '../enums/notification-type.enum';
 import { NotificationsService } from './notifications.service';
-
-const mockNotificationTemplatesService = {
-  findByType: jest.fn(),
-  compileTemplate: jest.fn(),
-};
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
@@ -58,10 +52,6 @@ describe('NotificationsService', () => {
           provide: getRepositoryToken(AppointmentEntity),
           useValue: appointmentRepository,
         },
-        {
-          provide: NotificationTemplatesService,
-          useValue: mockNotificationTemplatesService,
-        },
       ],
     }).compile();
 
@@ -73,7 +63,7 @@ describe('NotificationsService', () => {
   });
 
   describe('handleAppointmentCreated', () => {
-    it('should create and save reminder and follow_up notifications', async () => {
+    it('should create and save confirmation, reminder and follow_up notifications', async () => {
       const event = new AppointmentCreatedEvent(appointmentId, appointmentDate);
 
       const reminderDate = new Date('2026-08-04T10:00:00.000Z'); // 1 day before
@@ -87,15 +77,12 @@ describe('NotificationsService', () => {
         procedure: { name: 'Procedure' },
       } as unknown as AppointmentEntity);
 
-      mockNotificationTemplatesService.findByType.mockImplementation(
-        (_userId: string, type: NotificationTypeEnum) => {
-          if (type === NotificationTypeEnum.CONFIRMATION)
-            return Promise.resolve(null);
-          return Promise.resolve({ content: 'Template' });
-        },
-      );
-
       const mockNotifications = [
+        {
+          appointment: { id: appointmentId },
+          type: NotificationTypeEnum.CONFIRMATION,
+          scheduledFor: expect.any(Date) as unknown as Date,
+        },
         {
           appointment: { id: appointmentId },
           type: NotificationTypeEnum.REMINDER,
@@ -114,6 +101,11 @@ describe('NotificationsService', () => {
       await service.handleAppointmentCreated(event);
 
       expect(notificationRepository.create).toHaveBeenCalledWith([
+        {
+          appointment: { id: appointmentId },
+          type: NotificationTypeEnum.CONFIRMATION,
+          scheduledFor: expect.any(Date) as unknown as Date,
+        },
         {
           appointment: { id: appointmentId },
           type: NotificationTypeEnum.REMINDER,
