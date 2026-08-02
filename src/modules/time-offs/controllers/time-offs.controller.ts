@@ -38,11 +38,13 @@ export class TimeOffsController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
-    const { limit, page } = paginationQueryDto;
+    const { limit, page, startDate, endDate } = paginationQueryDto;
 
     const { timeOffs, totalCount } = await this.timeOffsService.findAll({
       limit,
       page,
+      startDate,
+      endDate,
     });
 
     return new PaginatedResponseDto(timeOffs, { page, limit, totalCount });

@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  FindOptionsWhere,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { getLoggedInUserHelper } from '@/common/helper/get-logged-in-user.helper';
@@ -37,12 +43,25 @@ export class TimeOffsService {
 
   async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
     const currentUserId = this.getUserId(userId);
-    const { limit, page } = paginationQueryDto;
+    const { limit, page, startDate, endDate } = paginationQueryDto;
+
+    const whereClause: FindOptionsWhere<TimeOffEntity> = {
+      user: { id: currentUserId },
+    };
+
+    if (startDate && endDate) {
+      whereClause.startDate = Between(startDate, endDate);
+    } else if (startDate) {
+      whereClause.startDate = MoreThanOrEqual(startDate);
+    } else if (endDate) {
+      whereClause.startDate = LessThanOrEqual(endDate);
+    }
 
     const [timeOffs, totalCount] = await this.timeOffRepository.findAndCount({
-      where: { user: { id: currentUserId } },
-      skip: page - 1,
+      where: whereClause,
+      skip: (page - 1) * limit,
       take: limit,
+      order: { startDate: 'ASC' },
     });
 
     return { timeOffs, totalCount };

@@ -95,8 +95,9 @@ describe('TimeOffsService', () => {
 
       expect(timeOffRepository.findAndCount).toHaveBeenCalledWith({
         where: { user: { id: userId } },
-        skip: 1,
+        skip: 5,
         take: 5,
+        order: { startDate: 'ASC' },
       });
     });
   });
