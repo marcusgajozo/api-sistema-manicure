@@ -20,7 +20,7 @@ import { i18nConfig } from './configs/i18n.config';
         fallbackLanguage: config.fallbackLanguage,
         loaderOptions: {
           path: join(__dirname, 'languages').replace('/test/', '/'),
-          watch: true,
+          watch: false,
         },
         typesOutputPath: join(
           __dirname,
