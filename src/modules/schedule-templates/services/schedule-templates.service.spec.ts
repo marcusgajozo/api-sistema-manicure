@@ -197,8 +197,9 @@ describe('ScheduleTemplatesService', () => {
 
       expect(scheduleTemplateRepository.findAndCount).toHaveBeenCalledWith({
         where: { user: { id: userId } },
-        skip: 1,
+        skip: 5,
         take: 5,
+        order: { createdAt: 'ASC' },
       });
     });
   });

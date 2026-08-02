@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  FindOptionsWhere,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 
 import { PaginationQueryDto } from '@/common/dtos/pagination.dto';
 import { DayOfWeek } from '@/common/enums/day-of-week.enum';
@@ -78,13 +84,26 @@ export class ScheduleTemplatesService {
 
   async findAll(paginationQueryDto: PaginationQueryDto, userId?: string) {
     const currentUserId = this.getUserId(userId);
-    const { limit, page } = paginationQueryDto;
+    const { limit, page, startDate, endDate } = paginationQueryDto;
+
+    const whereClause: FindOptionsWhere<ScheduleTemplateEntity> = {
+      user: { id: currentUserId },
+    };
+
+    if (startDate && endDate) {
+      whereClause.createdAt = Between(startDate, endDate);
+    } else if (startDate) {
+      whereClause.createdAt = MoreThanOrEqual(startDate);
+    } else if (endDate) {
+      whereClause.createdAt = LessThanOrEqual(endDate);
+    }
 
     const [scheduleTemplates, totalCount] =
       await this.scheduleTemplateRepository.findAndCount({
-        where: { user: { id: currentUserId } },
-        skip: page - 1,
+        where: whereClause,
+        skip: (page - 1) * limit,
         take: limit,
+        order: { createdAt: 'ASC' },
       });
 
     return { scheduleTemplates, totalCount };

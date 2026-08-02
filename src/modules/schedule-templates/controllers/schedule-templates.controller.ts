@@ -45,10 +45,15 @@ export class ScheduleTemplatesController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() paginationQueryDto: PaginationQueryDto) {
-    const { limit, page } = paginationQueryDto;
+    const { limit, page, startDate, endDate } = paginationQueryDto;
 
     const { scheduleTemplates, totalCount } =
-      await this.scheduleTemplatesService.findAll({ limit, page });
+      await this.scheduleTemplatesService.findAll({
+        limit,
+        page,
+        startDate,
+        endDate,
+      });
 
     return new PaginatedResponseDto(scheduleTemplates, {
       page,
