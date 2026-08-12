@@ -1,10 +1,6 @@
 {
-  "name": "nestjs",
+  "name": "api-sistema-manicure",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
-  "license": "UNLICENSED",
   "engines": {
     "node": "24.15.0"
   },
