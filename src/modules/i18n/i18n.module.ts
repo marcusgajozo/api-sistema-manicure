@@ -22,16 +22,19 @@ import { i18nConfig } from './configs/i18n.config';
           path: join(__dirname, 'languages').replace('/test/', '/'),
           watch: false,
         },
-        typesOutputPath: join(
-          __dirname,
-          '..',
-          '..',
-          '..',
-          '..',
-          'src',
-          'generated',
-          'i18n.generated.ts',
-        ),
+        typesOutputPath:
+          process.env.NODE_ENV === 'production'
+            ? undefined
+            : join(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                '..',
+                'src',
+                'generated',
+                'i18n.generated.ts',
+              ),
       }),
       resolvers: [
         { use: QueryResolver, options: ['lang'] },
