@@ -62,11 +62,11 @@ jobs:
       - name: Run database migrations
         run: pnpm migration:run
         env:
-          DATABASE_HOST_EXTERNAL: ${{ secrets.PROD_DB_HOST }}
-          DATABASE_PORT_EXTERNAL: ${{ secrets.PROD_DB_PORT }}
-          DATABASE_USER: ${{ secrets.PROD_DB_USER }}
-          DATABASE_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
-          DATABASE_NAME: ${{ secrets.PROD_DB_NAME }}
+          DATABASE_HOST_EXTERNAL: ${{ secrets.DB_HOST }}
+          DATABASE_PORT_EXTERNAL: ${{ secrets.DB_PORT }}
+          DATABASE_USER: ${{ secrets.DB_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DB_NAME }}
 
   deploy:
     needs: [build, migrate]
