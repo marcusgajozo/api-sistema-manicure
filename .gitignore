@@ -1,17 +1,19 @@
 *
 
-!database
-!database/**/*
-!src/**/*
-!src
-!test/**/*
-!test
-!docs/**/*
-!docs
+!.github
+!.github/**/*
 !.devcontainer
 !.devcontainer/**/*
 !.husky/**/*
 !.husky
+!database
+!database/**/*
+!docs/**/*
+!docs
+!src/**/*
+!src
+!test/**/*
+!test
 
 !.gitignore
 !.npmrc
