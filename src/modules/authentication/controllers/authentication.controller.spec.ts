@@ -1,11 +1,10 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
 
 import { authenticationConfig } from '../configs/authentication.config';
 import { SignInDto } from '../dtos/sign-in.dto';
-import { SignUpDto } from '../dtos/sign-up.dto';
 import { AuthenticationService } from '../services/authentication.service';
 import { AuthenticationController } from './authentication.controller';
 
@@ -106,34 +105,34 @@ describe('AuthenticationController', () => {
     });
   });
 
-  describe('signUp', () => {
-    const signUpDto: SignUpDto = {
-      name: 'Jane Doe',
-      phone: '11999999999',
-      email: 'jane@example.com',
-      password: 'password123',
-      passwordConfirm: 'password123',
-    };
+  // describe('signUp', () => {
+  //   const signUpDto: SignUpDto = {
+  //     name: 'Jane Doe',
+  //     phone: '11999999999',
+  //     email: 'jane@example.com',
+  //     password: 'password123',
+  //     passwordConfirm: 'password123',
+  //   };
 
-    it('creates account when email is available', async () => {
-      authService.signUp.mockResolvedValue({
-        id: 'auth-id',
-        userId: 'user-id',
-        email: signUpDto.email,
-        passwordHash: 'hashed-password',
-      } as never);
-
-      await expect(controller.signUp(signUpDto)).resolves.toBeUndefined();
-      expect(authService.signUp).toHaveBeenCalledWith(signUpDto);
-    });
-
-    it('throws ConflictException when email already exists', async () => {
-      authService.signUp.mockResolvedValue(null);
-
-      await expect(controller.signUp(signUpDto)).rejects.toThrow(
-        ConflictException,
-      );
-      expect(i18n.translate).toHaveBeenCalledWith('validation.EMAIL_EXISTS');
-    });
-  });
+  // it('creates account when email is available', async () => {
+  //   authService.signUp.mockResolvedValue({
+  //     id: 'auth-id',
+  //     userId: 'user-id',
+  //     email: signUpDto.email,
+  //     passwordHash: 'hashed-password',
+  //   } as never);
+  //
+  //   await expect(controller.signUp(signUpDto)).resolves.toBeUndefined();
+  //   expect(authService.signUp).toHaveBeenCalledWith(signUpDto);
+  // });
+  //
+  // it('throws ConflictException when email already exists', async () => {
+  //   authService.signUp.mockResolvedValue(null);
+  //
+  //   await expect(controller.signUp(signUpDto)).rejects.toThrow(
+  //     ConflictException,
+  //   );
+  //   expect(i18n.translate).toHaveBeenCalledWith('validation.EMAIL_EXISTS');
+  // });
+  // });
 });

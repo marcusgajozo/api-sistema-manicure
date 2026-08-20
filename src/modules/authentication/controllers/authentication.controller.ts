@@ -1,6 +1,5 @@
 import {
   Body,
-  ConflictException,
   Controller,
   HttpCode,
   HttpStatus,
@@ -19,7 +18,6 @@ import { I18nTranslations } from '@/generated/i18n.generated';
 
 import { authenticationConfig } from '../configs/authentication.config';
 import { SignInDto } from '../dtos/sign-in.dto';
-import { SignUpDto } from '../dtos/sign-up.dto';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Controller('authentication')
@@ -56,16 +54,16 @@ export class AuthenticationController {
     });
   }
 
-  @Public()
-  @Post('sign-up')
-  @HttpCode(HttpStatus.CREATED)
-  async signUp(@Body() signUpDto: SignUpDto) {
-    const user = await this.authService.signUp(signUpDto);
-
-    if (!user) {
-      throw new ConflictException(
-        this.i18n.translate('validation.EMAIL_EXISTS'),
-      );
-    }
-  }
+  // @Public()
+  // @Post('sign-up')
+  // @HttpCode(HttpStatus.CREATED)
+  // async signUp(@Body() signUpDto: SignUpDto) {
+  //   const user = await this.authService.signUp(signUpDto);
+  //
+  //   if (!user) {
+  //     throw new ConflictException(
+  //       this.i18n.translate('validation.EMAIL_EXISTS'),
+  //     );
+  //   }
+  // }
 }
