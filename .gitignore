@@ -4,6 +4,8 @@
 !.github/**/*
 !.devcontainer
 !.devcontainer/**/*
+!.agents
+!.agents/**/*
 !.husky/**/*
 !.husky
 !database
@@ -32,6 +34,7 @@
 !package.json
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
+!AGENTS.md
 !README.md
 !tsconfig.build.json
 !tsconfig.json
