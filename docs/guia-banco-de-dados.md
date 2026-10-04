@@ -1,4 +1,4 @@
-# Database
+# Banco de Dados
 
 Guia de conexão Postgres, migrations TypeORM e variáveis de ambiente.
 

@@ -1,100 +1,117 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API Sistema Manicure
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST do sistema de gestão de salão/manicure. Cuida de usuários, clientes, procedimentos, horários de trabalho, folgas, agendamentos e notificações, com autenticação por JWT.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Stack
 
-## Description
+- **NestJS 11** + **TypeScript**
+- **TypeORM 0.3** + **PostgreSQL 18**
+- **Autenticação** com `passport-jwt`, token em cookie `httpOnly`
+- **nestjs-i18n** (pt-BR) para mensagens de validação e erro
+- **Swagger** para documentação da API
+- **EventEmitter2** para eventos de domínio e **nestjs-cls** para contexto da requisição
+- **pnpm** + **Node 24** + **Docker**
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Arquitetura em transição
 
-## Project setup
+O projeto está migrando para **Clean Architecture**, um módulo por vez. Código novo nasce no padrão-alvo. O módulo piloto é `procedures`.
 
-```bash
-$ pnpm install
-```
+- Padrão-alvo: [`docs/padrao-arquitetura.md`](docs/padrao-arquitetura.md)
+- Migração de módulos legados: [`docs/guia-refatoracao.md`](docs/guia-refatoracao.md)
 
-## Compile and run the project
+## Documentação
 
-```bash
-# development
-$ pnpm run start
+| Tema                                      | Arquivo                                                      |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| Arquitetura e convenções de código        | [`docs/padrao-arquitetura.md`](docs/padrao-arquitetura.md)   |
+| Migração para Clean Architecture          | [`docs/guia-refatoracao.md`](docs/guia-refatoracao.md)       |
+| Banco, migrations e variáveis de ambiente | [`docs/guia-banco-de-dados.md`](docs/guia-banco-de-dados.md) |
+| Testes unitários e E2E                    | [`docs/guia-testes.md`](docs/guia-testes.md)                 |
+| Mensagens de commit                       | [`docs/padrao-commits.md`](docs/padrao-commits.md)           |
 
-# watch mode
-$ pnpm run start:dev
+## Requisitos
 
-# production mode
-$ pnpm run start:prod
-```
+- Node 24 (ver `.nvmrc` / `engines` no `package.json`)
+- pnpm (`corepack enable pnpm`)
+- Docker e Docker Compose
 
-## Run tests
-
-Veja o [Guia de Testes](docs/testing.md) para mais informações sobre a estrutura e organização dos testes.
+## Começando
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+cp .env.example .env      # ajuste as variáveis se necessário
+pnpm install
+pnpm run docker:up        # sobe Postgres + API em modo watch
+pnpm migration:run        # aplica as migrations (roda no host)
+pnpm seed:user            # cria o usuário de seed
 ```
 
-## Deployment
+A API fica em `http://localhost:3000` e o Swagger em `http://localhost:3000/swagger`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Credenciais do seed (padrão de `.env.example`): `admin@example.com` / `password123`.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Para subir apenas o banco:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+docker compose -f docker-compose.local.yaml up postgres-sistema-manicure-db -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Scripts
 
-## Resources
+| Comando                   | Descrição                               |
+| ------------------------- | --------------------------------------- |
+| `pnpm run start`          | Sobe a API                              |
+| `pnpm run start:dev`      | Sobe a API em watch mode                |
+| `pnpm run start:prod`     | Sobe a API com o build de produção      |
+| `pnpm run build`          | Compila o projeto                       |
+| `pnpm run lint`           | Roda o ESLint com `--fix`               |
+| `pnpm run lint:fix`       | ESLint + Prettier                       |
+| `pnpm run typecheck`      | Checagem de tipos (src + spec)          |
+| `pnpm run fix`            | `lint:fix` + `typecheck`                |
+| `pnpm run check`          | `fix` + testes                          |
+| `pnpm run test`           | Testes unitários                        |
+| `pnpm run test:e2e`       | Testes end-to-end                       |
+| `pnpm run test:cov`       | Testes com cobertura                    |
+| `pnpm run docker:up`      | Sobe Postgres + API via Docker Compose  |
+| `pnpm run docker:down`    | Derruba os serviços do Docker Compose   |
+| `pnpm migration:generate` | Gera migration a partir das entidades   |
+| `pnpm migration:run`      | Aplica migrations pendentes             |
+| `pnpm migration:revert`   | Desfaz a última migration               |
+| `pnpm migration:show`     | Mostra o status das migrations          |
+| `pnpm seed:user`          | Cria o usuário de seed                  |
+| `pnpm run commit`         | Commit guiado (Commitizen + commitlint) |
 
-Check out a few resources that may come in handy when working with NestJS:
+## Banco de dados
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+O schema evolui apenas por migrations em `database/migrations/` (`synchronize: false`). O CLI do TypeORM usa as variáveis `DATABASE_*_EXTERNAL` (acesso pelo host); a API no Docker usa `DATABASE_HOST`/`DATABASE_PORT`. Detalhes em [`docs/guia-banco-de-dados.md`](docs/guia-banco-de-dados.md).
 
-## Support
+## Testes
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- **Unitários**: `src/**/*.spec.ts`, ao lado do arquivo testado — `pnpm run test`.
+- **E2E**: `test/e2e/src/modules/<feature>/`, espelhando `src/modules/` e usando o schema `DATABASE_E2E_SCHEMA` — `pnpm run test:e2e`.
 
-## Stay in touch
+Mais detalhes em [`docs/guia-testes.md`](docs/guia-testes.md).
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Estrutura do projeto
 
-## License
+```
+src/
+├── common/            # código transversal (dtos, decorators, filters, helpers, pipes)
+├── modules/           # features (appointments, clients, procedures, users, ...)
+├── generated/         # tipos gerados do i18n (não editar)
+└── main.ts
+database/              # CLI do TypeORM: data-source, migrations e seeds
+test/                  # testes E2E
+docs/                  # documentação do projeto
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Autenticação
+
+O `JwtAuthGuard` é global (`APP_GUARD`): todas as rotas exigem o cookie `access_token`, exceto as marcadas com `@Public()`. O login é feito em `POST /authentication/sign-in`, que grava o token em cookie.
+
+## CI/CD
+
+Push na branch `prd` dispara o pipeline ([`.github/workflows/ci-cd.yaml`](.github/workflows/ci-cd.yaml)): build e push da imagem para o GitHub Container Registry, execução das migrations e acionamento do webhook do Portainer.
+
+## Licença
+
+[Apache 2.0](LICENSE).

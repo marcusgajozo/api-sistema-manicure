@@ -1,10 +1,10 @@
-# Commit Style Guide
+# Padrão de Commits
 
 ## Visão geral
 
-Este documento define as regras para commits no projeto. **Mensagens geradas pelo VS Code/Copilot devem seguir este guia integralmente.**
+Este documento define as regras para commits no projeto. **Todas as mensagens de commit devem seguir este guia.**
 
-## Regras para geração automática (VS Code / IA)
+## Regras do header
 
 **O header completo** (`<tipo>(<escopo>): <assunto>`) deve ter **no máximo 72 caracteres**.
 
