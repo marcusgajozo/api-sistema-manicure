@@ -22,6 +22,7 @@ async function seedUser(): Promise<void> {
     ...getMigrationConnectionOptions(),
     entities: [
       join(__dirname, '..', '..', 'src', 'modules', '**', '*.entity.{ts,js}'),
+      join(__dirname, '..', '..', 'src', 'modules', '**', '*.orm.{ts,js}'),
     ],
   });
 

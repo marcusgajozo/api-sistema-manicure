@@ -8,6 +8,9 @@ loadAppEnv();
 
 export default new DataSource({
   ...getMigrationConnectionOptions(),
-  entities: [join(__dirname, '..', 'src', 'modules', '**', '*.entity.{ts,js}')],
+  entities: [
+    join(__dirname, '..', 'src', 'modules', '**', '*.entity.{ts,js}'),
+    join(__dirname, '..', 'src', 'modules', '**', '*.orm.{ts,js}'),
+  ],
   migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
 });
