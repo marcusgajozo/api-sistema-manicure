@@ -4,20 +4,20 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { I18nValidationPipe } from 'nestjs-i18n';
 
-import { loadAppEnv } from '../database/load-env';
 import { AppModule } from './modules/app/app.module';
+import { appConfig } from './modules/app/configs/app.config';
 import {
   buildCorsOptions,
   corsConfig,
 } from './modules/app/configs/cors.config';
 
 async function bootstrap() {
-  loadAppEnv();
-
   const app = await NestFactory.create(AppModule);
   const corsConfiguration = app.get<ConfigType<typeof corsConfig>>(
     corsConfig.KEY,
   );
+
+  const appConfiguration = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
 
   app.enableCors(buildCorsOptions(corsConfiguration));
 
@@ -43,7 +43,7 @@ async function bootstrap() {
     jsonDocumentUrl: '/swagger-json',
   });
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(appConfiguration.port);
 }
 
 void bootstrap();

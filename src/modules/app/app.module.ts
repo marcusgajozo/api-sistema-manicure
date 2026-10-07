@@ -17,6 +17,7 @@ import { ProceduresModule } from '../procedures/procedures.module';
 import { ScheduleTemplatesModule } from '../schedule-templates/schedule-templates.module';
 import { TimeOffsModule } from '../time-offs/time-offs.module';
 import { UsersModule } from '../users/users.module';
+import { appConfig } from './configs/app.config';
 import { corsConfig } from './configs/cors.config';
 
 @Module({
@@ -25,7 +26,9 @@ import { corsConfig } from './configs/cors.config';
       global: true,
       middleware: { mount: true },
     }),
+    ConfigModule.forRoot(),
     ConfigModule.forFeature(corsConfig),
+    ConfigModule.forFeature(appConfig),
     DatabaseModule,
     I18nModule,
     AuthenticationModule,
