@@ -47,7 +47,7 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql
     ports:
-      - '${DATABASE_PORT_EXTERNAL}:5432'
+      - '127.0.0.1:${DATABASE_PORT_EXTERNAL}:5432'
     networks:
       - api-sistema-manicure-network
     healthcheck:
