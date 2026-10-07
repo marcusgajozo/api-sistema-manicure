@@ -2,12 +2,7 @@
   "name": "api-sistema-manicure",
   "version": "0.0.1",
   "engines": {
-    "node": "24.15.0"
-  },
-  "pnpm": {
-    "executionEnv": {
-      "nodeVersion": "24.15.0"
-    }
+    "node": "24.21.0"
   },
   "scripts": {
     "build": "nest build",

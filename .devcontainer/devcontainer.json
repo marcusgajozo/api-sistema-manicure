@@ -1,8 +1,0 @@
-{
-  "name": "API Sistema Manicure",
-  "dockerComposeFile": ["../docker-compose.local.yaml"],
-  "service": "api-sistema-manicure",
-  "workspaceFolder": "/usr/src/app",
-  "remoteUser": "node",
-  "shutdownAction": "stopCompose"
-}

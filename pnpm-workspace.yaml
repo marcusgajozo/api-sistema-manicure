@@ -2,3 +2,6 @@ allowBuilds:
   '@nestjs/core': false
   '@scarf/scarf': false
   unrs-resolver: false
+
+nodeVersion: 24.21.0
+engineStrict: true
