@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "baseUrl": "..",
+    "rootDir": "..",
+    "types": ["jest", "node"],
+    "paths": {
+      "@/*": ["src/*"],
+      "@src/*": ["src/*"],
+      "@test/*": ["test/*"]
+    }
+  },
+  "include": ["e2e/**/*", "**/*.e2e-spec.ts"]
+}
