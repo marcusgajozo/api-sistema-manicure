@@ -25,6 +25,7 @@ import { corsConfig } from './configs/cors.config';
       global: true,
       middleware: { mount: true },
     }),
+    ConfigModule.forRoot(),
     ConfigModule.forFeature(corsConfig),
     DatabaseModule,
     I18nModule,
