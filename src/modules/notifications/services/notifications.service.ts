@@ -93,7 +93,7 @@ export class NotificationsService implements OnModuleInit {
     notificationsToCreate.push({
       appointment: { id: event.appointmentId },
       type: NotificationTypeEnum.CONFIRMATION,
-      scheduledFor: new Date(), // Immediate
+      scheduledFor: new Date(),
     });
 
     notificationsToCreate.push({
