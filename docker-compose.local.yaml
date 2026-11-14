@@ -1,6 +1,9 @@
 volumes:
   pg-data:
   rabbitmq_data:
+  evolution_instances:
+  evolution_postgres_data:
+  evolution_redis_data:
 
 networks:
   api-sistema-manicure-network:
@@ -67,3 +70,71 @@ services:
       - '15672:15672'
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+
+  evolution-api:
+    image: evoapicloud/evolution-api:v2.3.7
+    container_name: evolution-api
+    restart: unless-stopped
+    ports:
+      - '${EVOLUTION_PORT_EXTERNAL:-8080}:8080'
+    volumes:
+      - evolution_instances:/evolution/instances
+    environment:
+      AUTHENTICATION_API_KEY: ${EVOLUTION_API_KEY}
+      AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES: 'true'
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: 'postgresql://${EVOLUTION_DATABASE_USER}:${EVOLUTION_DATABASE_PASSWORD}@evolution-postgres:5432/${EVOLUTION_DATABASE_NAME}?schema=evolution_api'
+      CACHE_REDIS_ENABLED: 'true'
+      CACHE_REDIS_URI: redis://evolution-redis:6379/6
+      CONFIG_SESSION_PHONE_CLIENT: 'Sistema Manicure'
+      CONFIG_SESSION_PHONE_NAME: Chrome
+    networks:
+      - api-sistema-manicure-network
+    depends_on:
+      evolution-postgres:
+        condition: service_healthy
+      evolution-redis:
+        condition: service_healthy
+
+  evolution-manager:
+    image: evoapicloud/evolution-manager:latest
+    container_name: evolution-manager
+    restart: unless-stopped
+    ports:
+      - '${EVOLUTION_MANAGER_PORT_EXTERNAL:-8081}:80'
+    networks:
+      - api-sistema-manicure-network
+
+  evolution-postgres:
+    image: postgres:15-alpine
+    container_name: evolution-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${EVOLUTION_DATABASE_NAME}
+      POSTGRES_USER: ${EVOLUTION_DATABASE_USER}
+      POSTGRES_PASSWORD: ${EVOLUTION_DATABASE_PASSWORD}
+    volumes:
+      - evolution_postgres_data:/var/lib/postgresql/data
+    networks:
+      - api-sistema-manicure-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  evolution-redis:
+    image: redis:8-alpine
+    container_name: evolution-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - evolution_redis_data:/data
+    networks:
+      - api-sistema-manicure-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
