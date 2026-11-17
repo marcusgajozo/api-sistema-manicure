@@ -1,14 +1,6 @@
 {
   "name": "api-sistema-manicure",
   "version": "0.0.1",
-  "engines": {
-    "node": "24.15.0"
-  },
-  "pnpm": {
-    "executionEnv": {
-      "nodeVersion": "24.15.0"
-    }
-  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write --ignore-unknown --no-error-on-unmatched-pattern \"src/**/*.ts\" \"src/**/*.spec.ts\" \"test/**/*.ts\" \"database/**/*.ts\" \"docs/**/*.md\" \"*.{js,mjs,cjs,json,md,yml,yaml}\"",
@@ -50,6 +42,8 @@
     "@nestjs/typeorm": "^11.0.0",
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
+    "amqp-connection-manager": "^5.0.1",
+    "amqplib": "^2.3.2",
     "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
