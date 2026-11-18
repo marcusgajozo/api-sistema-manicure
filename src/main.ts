@@ -40,7 +40,12 @@ async function bootstrap() {
     jsonDocumentUrl: '/swagger-json',
   });
 
-  await app.listen(process.env.API_PORT || 3000);
+  await app.listen(process.env.API_PORT || 3000).then(() => {
+    console.log(`Server is running on port ${process.env.API_PORT || 3000}`);
+    console.log(
+      `Swagger is running on http://localhost:${process.env.API_PORT || 3000}/swagger`,
+    );
+  });
 }
 
 void bootstrap();
