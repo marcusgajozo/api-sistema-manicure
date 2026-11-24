@@ -4,13 +4,23 @@ import { WhatsappInstanceValidator } from '../validators/whatsapp-instaces.valid
 export class WhatsappInstancesEntity {
   constructor(
     public readonly id: string,
-    public readonly intance: string,
+    public readonly remoteInstaceId: string | null,
     public readonly userId: string,
     public status: StatusWhatsappInstances,
-    public createdAt: Date,
-    public updatedAt: Date,
-    public deletedAt: Date,
+    public readonly createdAt?: Date,
+    public updatedAt?: Date,
+    public deletedAt?: Date,
   ) {
     WhatsappInstanceValidator.validate(this);
+  }
+
+  static create(userId: string): WhatsappInstancesEntity {
+    return new WhatsappInstancesEntity(
+      '',
+      null,
+      userId,
+      StatusWhatsappInstances.DISCONNECTED,
+      new Date(),
+    );
   }
 }
